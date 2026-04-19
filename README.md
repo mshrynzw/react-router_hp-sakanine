@@ -2,6 +2,8 @@
 
 VTuber／ストリーマー「サカナイン」向けの公式 Web サイトです。Figma のデザインをベースにしています。
 
+<img width="1920" height="911" alt="image" src="https://github.com/user-attachments/assets/6b9245ab-7e22-4941-92e0-53b32cc57e5e" />
+
 ## 技術スタック
 
 | 区分 | 採用技術 |
