@@ -8,7 +8,11 @@ import {
   getDummyImageUrlByFileName,
 } from '../config/dummyAssets';
 import { DUMMY_ACTIVITY_CARD_CONFIGS } from '../config/dummyActivityFeed';
-import { getTwitchPlayerSrc, socialProfileUrls } from '../config/socialUrls';
+import {
+  buildTwitchPlayerEmbedSrc,
+  extraTwitchEmbedParentsFromEnv,
+  socialProfileUrls,
+} from '../config/socialUrls';
 import {
   fetchLatestActivity,
   type ActivityItem,
@@ -88,7 +92,19 @@ function buildActivityCards(
 export default function TopPage() {
   const { t, language } = useLanguage();
   const isLive = false;
-  const twitchPlayerSrc = useMemo(() => getTwitchPlayerSrc(), []);
+  /** Twitch は `parent` が必須のため、マウント後に hostname を確実に含めて組み立てる */
+  const [twitchEmbed, setTwitchEmbed] = useState<
+    { status: 'pending' } | { status: 'ready'; src: string } | { status: 'missing' }
+  >({ status: 'pending' });
+
+  useEffect(() => {
+    const parents = [
+      window.location.hostname,
+      ...extraTwitchEmbedParentsFromEnv(),
+    ];
+    const src = buildTwitchPlayerEmbedSrc(parents);
+    setTwitchEmbed(src ? { status: 'ready', src } : { status: 'missing' });
+  }, []);
 
   const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);
   const [feedLoading, setFeedLoading] = useState(true);
@@ -161,12 +177,39 @@ export default function TopPage() {
         }} />
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4">
-          <div className="aspect-video w-full rounded-lg overflow-hidden border border-primary/30 shadow-2xl shadow-primary/20 bg-black/50 backdrop-blur-sm">
-            <iframe
-              src={twitchPlayerSrc}
-              className="w-full h-full"
-              allowFullScreen
-            />
+          <div className="aspect-video w-full min-h-[200px] rounded-lg overflow-hidden border border-primary/30 shadow-2xl shadow-primary/20 bg-black/50 backdrop-blur-sm">
+            {twitchEmbed.status === 'pending' && (
+              <div
+                className="flex h-full min-h-[12rem] items-center justify-center bg-black/40 text-muted-foreground text-sm"
+                aria-hidden
+              >
+                …
+              </div>
+            )}
+            {twitchEmbed.status === 'ready' && (
+              <iframe
+                src={twitchEmbed.src}
+                className="block w-full h-full border-0"
+                title="Twitch live embed"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowFullScreen
+              />
+            )}
+            {twitchEmbed.status === 'missing' && (
+              <div className="flex h-full min-h-[12rem] items-center justify-center px-4 text-center text-muted-foreground text-sm">
+                <a
+                  href={socialProfileUrls.twitch}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-4 hover:opacity-90"
+                >
+                  Twitch
+                </a>
+                <span className="mx-1">（</span>
+                <span>VITE_TWITCH 未設定のため埋め込みなし</span>
+                <span className="mx-1">）</span>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 text-center">

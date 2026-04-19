@@ -2,6 +2,11 @@
 
 interface ImportMetaEnv {
   readonly VITE_TWITCH: string;
+  /**
+   * Twitch 埋め込みの `parent` に追加するホスト（カンマ区切り）。
+   * カスタムドメインを Pages に割り当てたとき、`pages.dev` に加えてここに `example.com` 等を書く。
+   */
+  readonly VITE_TWITCH_EMBED_EXTRA_PARENTS?: string;
   readonly VITE_YOUTUBE: string;
   readonly VITE_X: string;
   readonly VITE_DONERU: string;

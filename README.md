@@ -135,10 +135,10 @@ corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pn
 
 `/about` などを **直接 URL 入力やリロードで開く** と、静的ホスティングでは `index.html` が返らず 404 になることがあります。次のいずれかで対応してください。
 
-1. **Cloudflare Pages の設定**  
+1. **Cloudflare Pages の設定**
    **Settings** 周辺で **SPA 向けのフォールバック** を有効にできる場合は有効にする（UI の名称は変わることがあります）。
 
-2. **`public/_redirects`**（Vite は `public/` を `dist/` にコピーします）  
+2. **`public/_redirects`**（Vite は `public/` を `dist/` にコピーします）
    次の 1 行で全パスを `index.html` にフォールバックできます。
 
    ```
