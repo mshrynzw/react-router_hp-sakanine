@@ -3,6 +3,8 @@
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
+      <!-- Vite のビルドで VITE_TWITCH が空のとき（例: Preview 用の変数未設定）のフォールバック。本番は Cloudflare の VITE_TWITCH を推奨 -->
+      <meta name="twitch-channel" content="sakanine" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>サカナイン / sakanine （旧世界のの屁こき隊）</title>
       <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>

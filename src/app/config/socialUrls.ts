@@ -1,4 +1,13 @@
-const twitch = import.meta.env.VITE_TWITCH ?? '';
+/**
+ * Cloudflare の Preview ビルドなどで `VITE_TWITCH` が渡らないことがある。
+ * そのとき埋め込み・リンクが空にならないよう、サイト既定のチャンネル名をフォールバックする。
+ * （別チャンネルにしたい場合は Cloudflare の Production と Preview の両方に `VITE_TWITCH` を設定する）
+ */
+const FALLBACK_TWITCH_LOGIN = 'sakanine';
+
+const twitch =
+  (import.meta.env.VITE_TWITCH && String(import.meta.env.VITE_TWITCH).trim()) ||
+  FALLBACK_TWITCH_LOGIN;
 const youtubeChannelId = import.meta.env.VITE_YOUTUBE ?? '';
 const xHandle = import.meta.env.VITE_X ?? '';
 const doneruName = import.meta.env.VITE_DONERU ?? '';

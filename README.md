@@ -49,6 +49,8 @@ Vite では `VITE_` で始まる変数だけがクライアントに埋め込ま
 | `VITE_TWITCH_ACCESS_TOKEN` | 任意 | Twitch Helix 用トークン（Client ID とセット） |
 | `VITE_USE_DUMMY_ACTIVITY_THUMBS` | 任意 | `true` または `1` のとき、アクティビティのサムネをダミー画像に固定 |
 
+**Cloudflare Pages**: 変数は **ビルド時** にクライアントへ埋め込まれます。**Production** と **Preview** は別設定のため、プレビュー URL 用のデプロイでも同じ `VITE_*` を登録してください。ダッシュボードでは **変数名は `VITE_YOUTUBE` のようにキーだけ**（値は別列）。`VITE_YOUTUBE=UC...` のように名前欄に書くと無効になります。`VITE_TWITCH` がビルドに含まれない場合でも、コード側で既定チャンネル名にフォールバックします（`src/app/config/socialUrls.ts`）。
+
 型定義とコメントは `src/vite-env.d.ts` も参照してください。
 
 ## 開発サーバー
