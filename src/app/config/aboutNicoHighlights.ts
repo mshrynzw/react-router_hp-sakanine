@@ -61,8 +61,9 @@ export const ABOUT_NICONICO_HIGHLIGHTS: AboutNiconicoHighlight[] = [
   {
     title: '世界の屁こき隊（仮）',
     nicovideoUrl: 'https://www.nicovideo.jp/watch/sm18474594',
-    fileName: 'sm18474594.webm',
-    fallbackSrc: '/videos/sm18474594.webm',
+    // mp4 のみ同梱（.webm は ~42MiB で Cloudflare Pages の 25MiB/ファイル制限を超えるため置かない）
+    fileName: 'sm18474594.mp4',
+    fallbackSrc: '/videos/sm18474594.mp4',
     thumbnailFile: 'sm18474594.webp',
   },
   {

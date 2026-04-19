@@ -109,6 +109,8 @@ vite.config.ts
 | **`package.json` の `packageManager`** | `pnpm` のバージョンを固定しています。Pages のビルドが Corepack 経由で同じ pnpm を使いやすくなります。 |
 | **ルートは単一パッケージ** | モノレポ用の `pnpm-workspace.yaml` は置いていません（Pages のビルドがワークスペース扱いするトラブルを避けるため）。 |
 
+**静的ファイルのサイズ**: Cloudflare Pages は **デプロイする各ファイルが最大 25 MiB** です。`dist` に含まれる動画・画像（Vite が `src/app/assets` からバンドルするものや `public/` のコピーも含む）がこれを超えると、アップロード検証で失敗します。巨大な動画は再エンコードするか、R2 等の外部ホストに置いて URL だけ参照してください。
+
 Git 連携ではダッシュボードの **ビルドコマンド／出力ディレクトリ** と `wrangler.toml` の内容が一致している必要があります。変更した場合は `wrangler.toml` の `pages_build_output_dir` も合わせてください（先頭スラッシュだけの絶対パス `/dist` は避け、**`dist` または `./dist`** のような相対指定を推奨します）。
 
 ### 共通のビルド設定（ダッシュボード）
