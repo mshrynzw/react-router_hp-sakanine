@@ -2,6 +2,19 @@ import type { ActivityPlatform } from '../lib/activityFeed';
 import { socialProfileUrls } from './socialUrls';
 
 /**
+ * ダミーサムネ表示のオン／オフ。
+ * Cloudflare の Preview などで `VITE_*` がビルドに乗らないことがあるため、**未設定のときはオン（true）** とする。
+ * オフにしたい場合は `VITE_USE_DUMMY_ACTIVITY_THUMBS=false` または `0` を明示。
+ */
+export function isDummyActivityThumbsEnabled(): boolean {
+  const raw = import.meta.env.VITE_USE_DUMMY_ACTIVITY_THUMBS;
+  if (raw === undefined || raw === '') return true;
+  const v = String(raw).trim().toLowerCase();
+  if (v === 'false' || v === '0' || v === 'no') return false;
+  return v === 'true' || v === '1' || v === 'yes';
+}
+
+/**
  * API からアクティビティが取得できず、かつ `VITE_USE_DUMMY_ACTIVITY_THUMBS=true` のときに
  * 最新アクティビティ欄へ出すカード内容（1要素＝1カード）。
  *

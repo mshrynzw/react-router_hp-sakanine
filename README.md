@@ -49,7 +49,7 @@ Vite では `VITE_` で始まる変数だけがクライアントに埋め込ま
 | `VITE_YOUTUBE_API_KEY` | 任意 | YouTube Data API v3 用（アクティビティ取得）。リファラー制限の設定を推奨 |
 | `VITE_TWITCH_CLIENT_ID` | 任意 | Twitch Helix API 用 Client ID |
 | `VITE_TWITCH_ACCESS_TOKEN` | 任意 | Twitch Helix 用トークン（Client ID とセット） |
-| `VITE_USE_DUMMY_ACTIVITY_THUMBS` | 任意 | `true` または `1` のとき、アクティビティのサムネをダミー画像に固定 |
+| `VITE_USE_DUMMY_ACTIVITY_THUMBS` | 任意 | **未設定ならオン**（ダミー画像を使う）。`false` / `0` / `no` でオフ。`true` / `1` / `yes` で明示オン。Preview で env がビルドに乗らない場合でも未設定ならダミーが出ます。 |
 
 **Cloudflare Pages**: 変数は **ビルド時** にクライアントへ埋め込まれます。**Production** と **Preview** は別設定のため、プレビュー URL 用のデプロイでも同じ `VITE_*` を登録してください。ダッシュボードでは **変数名は `VITE_YOUTUBE` のようにキーだけ**（値は別列）。`VITE_YOUTUBE=UC...` のように名前欄に書くと無効になります。`VITE_TWITCH` がビルドに含まれない場合でも、コード側で既定チャンネル名にフォールバックします（`src/app/config/socialUrls.ts`）。
 

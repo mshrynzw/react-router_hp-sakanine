@@ -24,8 +24,8 @@ interface ImportMetaEnv {
    */
   readonly VITE_TWITCH_ACCESS_TOKEN?: string;
   /**
-   * `"true"` または `"1"` のとき、アクティビティカードのサムネを常に `assets/images/dummy` の画像にする。
-   * 未設定またはそれ以外のときは API のサムネを優先し、なければダミーをフォールバック。
+   * ダミーサムネの利用。未設定時はオン（`dummyActivityFeed.ts` の `isDummyActivityThumbsEnabled`）。
+   * `false` / `0` / `no` でオフ。
    */
   readonly VITE_USE_DUMMY_ACTIVITY_THUMBS?: string;
 }

@@ -7,7 +7,10 @@ import {
   DUMMY_IMAGE_URLS_ROTATION,
   getDummyImageUrlByFileName,
 } from '../config/dummyAssets';
-import { DUMMY_ACTIVITY_CARD_CONFIGS } from '../config/dummyActivityFeed';
+import {
+  DUMMY_ACTIVITY_CARD_CONFIGS,
+  isDummyActivityThumbsEnabled,
+} from '../config/dummyActivityFeed';
 import {
   buildTwitchPlayerEmbedSrc,
   extraTwitchEmbedParentsFromEnv,
@@ -18,9 +21,7 @@ import {
   type ActivityItem,
 } from '../lib/activityFeed';
 
-const useDummyActivityThumbs =
-  import.meta.env.VITE_USE_DUMMY_ACTIVITY_THUMBS === 'true' ||
-  import.meta.env.VITE_USE_DUMMY_ACTIVITY_THUMBS === '1';
+const useDummyActivityThumbs = isDummyActivityThumbsEnabled();
 
 const dateLocales = {
   ja,
