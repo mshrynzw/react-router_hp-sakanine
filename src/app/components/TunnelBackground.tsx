@@ -89,14 +89,9 @@ export default function TunnelBackground() {
       }
       circle.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
 
-      const material = new THREE.LineDashedMaterial({
-        color: new THREE.Color().setRGB(37 / 255, 99 / 255, 235 / 255),
-        // dashSize: 0.55,
-        // gapSize: 0.45,
-        transparent: true,
-        opacity: 0.5,
-      });
-
+      const material = new THREE.LineBasicMaterial({
+        color: new THREE.Color().setRGB(37 / 255, 99 / 255, 235 / 255)
+      })
       const line = new THREE.Line(circle, material);
       line.position.set(p.x, p.y, p.z);
       line.computeLineDistances();

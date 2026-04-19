@@ -42,6 +42,20 @@
   animation: glow-pulse 2s ease-in-out infinite;
 }
 
+/* ページ遷移時のインジケーター（NavigationLoading） */
+@keyframes nav-loading-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(280%);
+  }
+}
+
+.animate-nav-loading-bar {
+  animation: nav-loading-bar 0.9s ease-in-out infinite;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(37, 99, 235, 0.5) rgba(15, 23, 42, 0.5);

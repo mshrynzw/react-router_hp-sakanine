@@ -1,0 +1,5 @@
+# Cloudflare Pages（静的 Vite サイト）
+# https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+name = "react-router-hp-sakanine"
+compatibility_date = "2024-04-19"
+pages_build_output_dir = "./dist"

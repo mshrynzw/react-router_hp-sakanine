@@ -99,88 +99,109 @@ vite.config.ts
 
 ## Cloudflare へのデプロイ
 
-このプロジェクトは **静的サイト（SPA）** としてビルドできるため、**Cloudflare Pages** にそのまま載せられます。以下では代表的な 2 通り（**Git 連携** と **CLI 手動デプロイ**）を説明します。
+このプロジェクトは **静的サイト（SPA）** としてビルドできるため、**Cloudflare Pages** にそのまま載せられます。代表的な 2 通り（**Git 連携** と **Wrangler CLI**）を以下にまとめます。
 
-### 共通のビルド設定
+### リポジトリ側の前提（Pages 用）
 
-Cloudflare の「ビルドコマンド」「出力ディレクトリ」は次のとおりです。
+| 内容 | 説明 |
+|------|------|
+| **`wrangler.toml`** | ルートにあります。`pages_build_output_dir = "./dist"` とプロジェクト名・互換日付を定義しています。[Pages と Wrangler の設定](https://developers.cloudflare.com/pages/functions/wrangler-configuration/)に沿った最小構成です。 |
+| **`package.json` の `packageManager`** | `pnpm` のバージョンを固定しています。Pages のビルドが Corepack 経由で同じ pnpm を使いやすくなります。 |
+| **ルートは単一パッケージ** | モノレポ用の `pnpm-workspace.yaml` は置いていません（Pages のビルドがワークスペース扱いするトラブルを避けるため）。 |
+
+Git 連携ではダッシュボードの **ビルドコマンド／出力ディレクトリ** と `wrangler.toml` の内容が一致している必要があります。変更した場合は `wrangler.toml` の `pages_build_output_dir` も合わせてください（先頭スラッシュだけの絶対パス `/dist` は避け、**`dist` または `./dist`** のような相対指定を推奨します）。
+
+### 共通のビルド設定（ダッシュボード）
 
 | 項目 | 値 |
 |------|-----|
-| ビルドコマンド | `pnpm run build`（`npm run build` でも可） |
+| ビルドコマンド | `pnpm run build`（`npm run build` でも可だが、`pnpm-lock.yaml` があるため pnpm 推奨） |
 | ビルド出力ディレクトリ | `dist` |
-| ルートディレクトリ | リポジトリのルート（`/`）のまま |
+| ルートディレクトリ | 空欄（リポジトリのルート） |
 
-`pnpm` を使う場合、Pages のビルド環境で `pnpm` が使えるようにする必要があります。次のいずれかを行うのが一般的です。
+**Node のバージョン**は Pages の **Environment variables** などで `NODE_VERSION` に `20` を指定すると、ローカル（README の前提）と揃えやすいです。
 
-- **方法 A**: 環境変数 `NODE_VERSION` を `20` などに設定し、ビルドコマンドの前に corepack を有効化する
-  例: `corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm run build`
-- **方法 B**: ビルドコマンドを `npm install && npm run build` に統一する（`package-lock.json` をコミットしている場合）
+`pnpm` が認識されない場合は、ビルドコマンドを次のようにしても構いません（チームの運用に合わせてください）。
 
-チームの運用に合わせて選んでください。
+```bash
+corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm run build
+```
+
+`npm` に統一する場合は `package-lock.json` をコミットし、ビルドコマンドを `npm ci && npm run build` などにします。
 
 ### クライアントサイドルーティング（重要）
 
 `/about` などを **直接 URL 入力やリロードで開く** と、静的ホスティングでは `index.html` が返らず 404 になることがあります。次のいずれかで対応してください。
 
-1. **Cloudflare Pages の設定**
-   プロジェクトの **Settings → Builds & deployments** 周辺で、**Single Page Application（SPA）向けのフォールバック** を有効にできる場合は有効にする（UI は変更されることがあるため、表示名はダッシュボードで確認してください）。
+1. **Cloudflare Pages の設定**  
+   **Settings** 周辺で **SPA 向けのフォールバック** を有効にできる場合は有効にする（UI の名称は変わることがあります）。
 
-2. **`public/_redirects` を追加する**（Vite は `public/` を `dist/` にコピーします）
-   次の 1 行を `public/_redirects` に書くと、すべてのパスを `index.html` にフォールバックできます。
+2. **`public/_redirects`**（Vite は `public/` を `dist/` にコピーします）  
+   次の 1 行で全パスを `index.html` にフォールバックできます。
 
    ```
    /*    /index.html   200
    ```
 
-本リポジトリに `_redirects` が無い場合は、デプロイ後に `/about` 等の直アクセスを必ず確認してください。
+`_redirects` を置いていない場合は、デプロイ後に `/about` などの直アクセスを必ず確認してください。
 
 ### 方法 1: Cloudflare Pages（Git 連携）— 推奨
 
 1. [Cloudflare ダッシュボード](https://dash.cloudflare.com/) にログインします。
-2. **Workers & Pages** → **Create** → **Pages** → **Connect to Git** を選びます。
-3. GitHub / GitLab などを連携し、このリポジトリとブランチ（例: `main`）を選択します。
-4. ビルド設定で上記の **ビルドコマンド** と **出力ディレクトリ `dist`** を入力します。
-5. **Environment variables（環境変数）** に、本番用の `VITE_*` をすべて登録します。
-   - シークレットにしたい値は **Encrypt** 可能な項目に設定します（ダッシュボードの案内に従ってください）。
-6. 保存してデプロイします。以降、プッシュのたびにビルドが走ります。
+2. **Workers & Pages** → **Create** → **Pages** → **Connect to Git** を選びます（[Git 連携の手順](https://developers.cloudflare.com/pages/get-started/git-integration/)）。
+3. リポジトリと本番ブランチ（例: `main`）を選択します。
+4. ビルド設定に、上記の **ビルドコマンド** と **出力ディレクトリ `dist`** を入力します。**Root directory** は空のまま（サブディレクトリにプロジェクトが無い場合）です。
+5. **Variables and Secrets** に、本番用の `VITE_*` をすべて登録します。機密は **Encrypt** 可能な項目へ（ダッシュボードの案内に従ってください）。
+6. 保存してデプロイします。以降、対象ブランチへのプッシュでビルドが走ります。
 
-**注意**: 環境変数を変更したあとは、**再デプロイ**が必要な場合があります（ダッシュボードの「Retry deployment」など）。
+**ダッシュボードの設定をローカルの `wrangler.toml` に落とし込みたい場合**は、認証済みの環境で次を実行し、生成された内容をコミット前に確認してください。
+
+```bash
+npx wrangler pages download config <Pages のプロジェクト名>
+```
+
+**注意**: 環境変数を変えたあとは、変更が反映されるまで **再デプロイ** が必要な場合があります。
 
 ### 方法 2: Wrangler CLI（手動アップロード）
 
-ローカルでビルドした `dist` をそのまま Pages に載せる方法です。
+ローカルでビルドした `dist` を Pages に載せる方法です。
 
-1. [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/) をインストールします（`npm install -g wrangler` またはプロジェクトの devDependency として追加）。
+1. [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/) を用意します（`npm install -g wrangler` または `npx wrangler`）。
 2. ログインします。
 
    ```bash
    npx wrangler login
    ```
 
-3. 初回のみ、Pages プロジェクトを作成します（名前は任意）。
+3. 初回のみ、Pages プロジェクトを作成します。名前は **`wrangler.toml` の `name`** と揃えると管理しやすいです。
 
    ```bash
    npx wrangler pages project create <プロジェクト名>
    ```
 
-4. ローカルでビルドします。
+4. ビルドします。
 
    ```bash
    pnpm run build
    ```
 
-5. `dist` をデプロイします。
+5. デプロイします。
 
    ```bash
    npx wrangler pages deploy dist --project-name=<プロジェクト名>
    ```
 
-プレビュー用ブランチや本番用プロダクションの切り替えは、Wrangler のドキュメントおよびダッシュボードの **Deployments** から行えます。
+プレビュー／本番の切り替えは [Wrangler のドキュメント](https://developers.cloudflare.com/workers/wrangler/)およびダッシュボードの **Deployments** から行えます。
+
+### デプロイが失敗するとき（参考）
+
+- ログが **依存インストールより前**で `internal error` になる場合、しばらく待って再試行するか、[サポート](https://cfl.re/3WgEyrH)にビルド ID を添えて問い合わせてください。
+- **ビルド出力ディレクトリ**が `dist` と一致しているか、`wrangler.toml` の `pages_build_output_dir` と矛盾していないか確認してください。
+- 環境変数名は `VITE_` プレフィックス付きで、アプリ側（`src/vite-env.d.ts` など）と一致させてください。
 
 ### デプロイ後の確認
 
 - トップページが表示されること
 - `/about`、`/privacy` など各パスを **アドレスバーに直接入力** しても表示されること（SPA フォールバック）
 - YouTube / Twitch のアクティビティが期待どおりか（API キー・トークン・CORS／リファラー制限）
-- フッターのメール・Discord リンクが `.env` の内容どおりか
+- フッターのメール・Discord リンクが本番の `VITE_*` の内容どおりか
