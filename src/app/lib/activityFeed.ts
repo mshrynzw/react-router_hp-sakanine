@@ -14,6 +14,25 @@ export interface ActivityItem {
   url: string;
 }
 
+/** API から組み立てた行（型述語用。`ActivityItem` の部分型） */
+type YouTubeFeedRow = {
+  id: string;
+  platform: 'youtube';
+  title: string;
+  publishedAt: number;
+  thumbnail: string | null;
+  url: string;
+};
+
+type TwitchFeedRow = {
+  id: string;
+  platform: 'twitch';
+  title: string;
+  publishedAt: number;
+  thumbnail: string | null;
+  url: string;
+};
+
 export interface ActivityFetchResult {
   items: ActivityItem[];
   /** YouTube を試みたが失敗したとき（403 等。UI に表示用） */
@@ -126,7 +145,7 @@ async function fetchYouTubeLatest(
         url: `https://www.youtube.com/watch?v=${videoId}`,
       };
     })
-    .filter((x): x is ActivityItem => x !== null);
+    .filter((x): x is YouTubeFeedRow => x !== null);
 
   return { items };
 }
@@ -196,7 +215,7 @@ async function fetchTwitchLatest(
         url: v.url,
       };
     })
-    .filter((x): x is ActivityItem => x !== null);
+    .filter((x): x is TwitchFeedRow => x !== null);
 }
 
 const MAX_PER_SOURCE = 6;

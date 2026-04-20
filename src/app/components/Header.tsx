@@ -40,18 +40,23 @@ export default function Header() {
                 className="relative w-10 h-10 rounded-lg object-cover border-2 border-primary/30 shadow-lg"
               />
             </div>
-            <span className="tracking-widest hidden sm:block">サカナイン / sakanine （旧世界のの屁こき隊）</span>
+            <span className="tracking-widest hidden sm:block">サカナイン / Sakanine （旧世界のの屁こき隊）</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => (
+            {navItems.map((item, index) => (
               <Link
                 key={item.path}
                 to={item.path}
+                style={
+                  !isActive(item.path)
+                    ? { animationDelay: `${index * 0.28}s` }
+                    : undefined
+                }
                 className={`px-4 py-2 rounded-lg transition-all duration-300 tracking-wider text-sm ${
                   isActive(item.path)
                     ? 'bg-primary/20 text-primary border border-primary/30'
-                    : 'hover:bg-muted/20 text-muted-foreground hover:text-foreground'
+                    : 'hover:bg-muted/20 text-muted-foreground hover:text-foreground nav-invite-glow'
                 }`}
               >
                 {item.label}
@@ -89,15 +94,20 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-primary/20 bg-background/95 backdrop-blur-md animate-in slide-in-from-top duration-200">
           <nav className="px-4 py-4 space-y-2">
-            {navItems.map((item) => (
+            {navItems.map((item, index) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
+                style={
+                  !isActive(item.path)
+                    ? { animationDelay: `${index * 0.28}s` }
+                    : undefined
+                }
                 className={`block px-4 py-3 rounded-lg transition-all duration-300 tracking-wider ${
                   isActive(item.path)
                     ? 'bg-primary/20 text-primary border border-primary/30'
-                    : 'hover:bg-muted/20 text-muted-foreground'
+                    : 'hover:bg-muted/20 text-muted-foreground hover:text-foreground nav-invite-glow'
                 }`}
               >
                 {item.label}

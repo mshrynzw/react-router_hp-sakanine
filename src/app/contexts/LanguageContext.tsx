@@ -34,6 +34,7 @@ interface Translations {
     niconicoOpenExternal: string;
     /** 再生ボタンの説明（アクセシビリティ） */
     playHighlight: string;
+    pastGames: string;
     bio: string;
   };
   schedule: {
@@ -65,7 +66,6 @@ interface Translations {
     email: string;
     discord: string;
     privacy: string;
-    copyright: string;
   };
 }
 
@@ -81,7 +81,7 @@ const translations: Record<Language, Translations> = {
     hero: {
       live: 'ライブ配信中',
       offline: 'オフライン',
-      streamerName: 'ゲームストリーマー',
+      streamerName: 'サカナイン',
     },
     activityFeed: {
       title: '最新アクティビティ',
@@ -97,9 +97,10 @@ const translations: Record<Language, Translations> = {
       profile: 'プロフィール',
       highlights: 'ハイライト',
       niconicoHighlights: 'ニコニコ動画 - ベストモーメント',
-      niconicoOpenExternal: 'ニコニコ動画で見る',
+      niconicoOpenExternal: 'ニコニコ大百科（外部リンク）',
+      pastGames: '過去のゲーム',
       playHighlight: '動画を再生',
-      bio: 'ゲーム配信者として、日々エンターテインメントをお届けしています。主にアクションゲームやRPGを中心に配信中です。現在はTwitchで配信中です。',
+      bio: '2011年から配信を開始。ゲーム配信者として、日々エンターテインメントをお届けしています。主にアクションゲームやRPGを中心に配信中です。現在はTwitchで配信中です。',
     },
     schedule: {
       title: '配信スケジュール',
@@ -129,7 +130,6 @@ const translations: Record<Language, Translations> = {
       email: 'メール',
       discord: 'Discord',
       privacy: 'プライバシーポリシー',
-      copyright: '© 2026 All rights reserved.',
     },
   },
   en: {
@@ -143,7 +143,7 @@ const translations: Record<Language, Translations> = {
     hero: {
       live: 'LIVE NOW',
       offline: 'OFFLINE',
-      streamerName: 'Game Streamer',
+      streamerName: 'Sakanine',
     },
     activityFeed: {
       title: 'Latest Activity',
@@ -159,9 +159,10 @@ const translations: Record<Language, Translations> = {
       profile: 'Profile',
       highlights: 'Highlights',
       niconicoHighlights: 'NicoNico - Best Moments',
-      niconicoOpenExternal: 'Open on Niconico',
+      niconicoOpenExternal: 'NicoNico Encyclopedia (External Link)',
+      pastGames: 'Past Games',
       playHighlight: 'Play video',
-      bio: 'As a game streamer, I deliver entertainment daily. Streaming mainly action games and RPGs. I\'m currently streaming on Twitch.',
+      bio: 'Started streaming in 2011. As a game streamer, I deliver entertainment daily. Streaming mainly action games and RPGs. I\'m currently streaming on Twitch.',
     },
     schedule: {
       title: 'Stream Schedule',
@@ -191,7 +192,6 @@ const translations: Record<Language, Translations> = {
       email: 'Email',
       discord: 'Discord',
       privacy: 'Privacy Policy',
-      copyright: '© 2026 All rights reserved.',
     },
   },
   zh: {
@@ -205,7 +205,7 @@ const translations: Record<Language, Translations> = {
     hero: {
       live: '正在直播',
       offline: '离线',
-      streamerName: '游戏主播',
+      streamerName: 'Sakanine',
     },
     activityFeed: {
       title: '最新动态',
@@ -220,9 +220,10 @@ const translations: Record<Language, Translations> = {
       profile: '个人资料',
       highlights: '精彩集锦',
       niconicoHighlights: 'NicoNico - 精彩时刻',
-      niconicoOpenExternal: '在 Niconico 打开',
+      niconicoOpenExternal: 'NicoNico 大百科（外部链接）',
+      pastGames: 'Past Games',
       playHighlight: '播放视频',
-      bio: '作为游戏主播，我每天为大家带来娱乐内容。主要直播动作游戏和RPG游戏。我目前正在Twitch上直播。',
+      bio: '配信始于2011年。作为游戏主播，我每天为大家带来娱乐内容。主要直播动作游戏和RPG游戏。我目前正在Twitch上直播。',
     },
     schedule: {
       title: '直播时间表',
@@ -252,7 +253,6 @@ const translations: Record<Language, Translations> = {
       email: '邮箱',
       discord: 'Discord',
       privacy: '隐私政策',
-      copyright: '© 2026 版权所有',
     },
   },
   ko: {
@@ -266,7 +266,7 @@ const translations: Record<Language, Translations> = {
     hero: {
       live: '라이브 중',
       offline: '오프라인',
-      streamerName: '게임 스트리머',
+      streamerName: 'Sakanine',
     },
     activityFeed: {
       title: '최신 활동',
@@ -282,9 +282,10 @@ const translations: Record<Language, Translations> = {
       profile: '프로필',
       highlights: '하이라이트',
       niconicoHighlights: 'NicoNico - 베스트 모먼트',
-      niconicoOpenExternal: 'Niconico에서 보기',
+      niconicoOpenExternal: 'NicoNico 대백과사전（외부 링크）',
+      pastGames: 'Past Games',
       playHighlight: '동영상 재생',
-      bio: '게임 스트리머로서 매일 엔터테인먼트를 제공합니다. 주로 액션 게임과 RPG를 방송합니다. 현재는 Twitch로 전송 중입니다.',
+      bio: '방송 시작일 2011년. 게임 스트리머로서 매일 엔터테인먼트를 제공합니다. 주로 액션 게임과 RPG를 방송합니다. 현재는 Twitch로 전송 중입니다.',
     },
     schedule: {
       title: '방송 일정',
@@ -314,7 +315,6 @@ const translations: Record<Language, Translations> = {
       email: '이메일',
       discord: 'Discord',
       privacy: '개인정보 보호정책',
-      copyright: '© 2026 All rights reserved.',
     },
   },
 };

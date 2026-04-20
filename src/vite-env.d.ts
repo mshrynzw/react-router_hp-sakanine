@@ -1,5 +1,20 @@
 /// <reference types="vite/client" />
 
+declare module '*.md?raw' {
+  const src: string;
+  export default src;
+}
+
+/** Vite の `import x from '...?raw'`（拡張子問わず） */
+declare module '*?raw' {
+  const src: string;
+  export default src;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 interface ImportMetaEnv {
   readonly VITE_TWITCH: string;
   /**

@@ -103,7 +103,7 @@ export default function TunnelBackground() {
     let raf = 0;
 
     const render = () => {
-      percentage += 0.001;
+      percentage += 0.0001;
       const p1 = path.getPointAt(percentage % 1);
       const p2 = path.getPointAt((percentage + 0.005) % 1);
       camera.position.set(p1.x, p1.y, p1.z);

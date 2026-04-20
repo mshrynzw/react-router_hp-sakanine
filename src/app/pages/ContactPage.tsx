@@ -36,7 +36,7 @@ export default function ContactPage() {
         <div className="h-px flex-1 bg-gradient-to-r from-primary via-primary to-transparent" />
       </div>
 
-      <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed tracking-wide">
+      <p className="text-center mb-8 max-w-2xl mx-auto leading-relaxed tracking-wide">
         {t.contact.intro}
       </p>
 

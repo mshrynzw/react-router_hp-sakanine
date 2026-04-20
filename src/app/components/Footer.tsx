@@ -123,7 +123,7 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-primary/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            {t.footer.copyright}
+            © {new Date().getFullYear()} Sakanine. All rights reserved.
           </p>
           <Link
             to="/privacy"

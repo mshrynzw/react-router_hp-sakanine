@@ -56,6 +56,35 @@
   animation: nav-loading-bar 0.9s ease-in-out infinite;
 }
 
+/* ヘッダー：未選択ナビのクリック誘導（輝き／色は Tailwind の text-* に任せる） */
+@keyframes nav-invite-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 0 transparent;
+  }
+  50% {
+    text-shadow:
+      0 0 12px color-mix(in srgb, var(--primary) 55%, transparent),
+      0 0 24px color-mix(in srgb, var(--primary) 26%, transparent),
+      0 0 36px color-mix(in srgb, var(--secondary) 18%, transparent);
+  }
+}
+
+.nav-invite-glow {
+  animation: nav-invite-glow 3.2s ease-in-out infinite;
+}
+
+.nav-invite-glow:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-invite-glow {
+    animation: none;
+    text-shadow: none;
+  }
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(37, 99, 235, 0.5) rgba(15, 23, 42, 0.5);
