@@ -85,6 +85,36 @@
   }
 }
 
+/* ヘッダー SNS ボタン：ボーダーが揺らめくグラデーション */
+@keyframes sns-border-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.sns-header-trigger-gradient {
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--primary) 50%, transparent),
+    color-mix(in srgb, var(--secondary) 75%, transparent),
+    color-mix(in srgb, var(--primary) 40%, transparent),
+    color-mix(in srgb, var(--secondary) 60%, transparent),
+    color-mix(in srgb, var(--primary) 50%, transparent)
+  );
+  background-size: 220% 100%;
+  animation: sns-border-shimmer 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sns-header-trigger-gradient {
+    animation: none;
+    background-position: 40% 50%;
+  }
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(37, 99, 235, 0.5) rgba(15, 23, 42, 0.5);

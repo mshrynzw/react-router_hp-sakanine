@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Menu, X } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { SocialLinksDropdownItems } from './SocialLinksShared';
 
 const iconImage = new URL('../assets/images/icon.webp', import.meta.url).href;
 
@@ -64,7 +70,7 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 shrink-0">
             <div className="hidden md:flex items-center gap-1 bg-muted/20 rounded-lg p-1 border border-primary/10">
               {languages.map((lang) => (
                 <button
@@ -80,6 +86,30 @@ export default function Header() {
                 </button>
               ))}
             </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="group relative overflow-hidden rounded-lg p-px text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=open]:text-foreground"
+                >
+                  <span
+                    aria-hidden
+                    className="sns-header-trigger-gradient pointer-events-none absolute inset-0 rounded-lg"
+                  />
+                  <span className="relative z-[1] flex items-center gap-1 rounded-[calc(0.5rem-1px)] bg-muted/90 px-3 py-2 text-sm tracking-wider transition-colors hover:bg-muted/80 group-data-[state=open]:bg-background/85">
+                    {t.footer.social}
+                    <ChevronDown
+                      className="w-4 h-4 opacity-70 transition-transform group-data-[state=open]:rotate-180"
+                      aria-hidden
+                    />
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[min(calc(100vw-2rem),18rem)] p-2">
+                <SocialLinksDropdownItems />
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

@@ -126,7 +126,7 @@ const translations: Record<Language, Translations> = {
       success: 'メッセージを送信しました！',
     },
     footer: {
-      social: 'ソーシャル',
+      social: 'SNS',
       email: 'メール',
       discord: 'Discord',
       privacy: 'プライバシーポリシー',
@@ -188,7 +188,7 @@ const translations: Record<Language, Translations> = {
       success: 'Message sent successfully!',
     },
     footer: {
-      social: 'Social',
+      social: 'SNS',
       email: 'Email',
       discord: 'Discord',
       privacy: 'Privacy Policy',
@@ -249,7 +249,7 @@ const translations: Record<Language, Translations> = {
       success: '消息发送成功！',
     },
     footer: {
-      social: '社交媒体',
+      social: 'SNS',
       email: '邮箱',
       discord: 'Discord',
       privacy: '隐私政策',
@@ -311,7 +311,7 @@ const translations: Record<Language, Translations> = {
       success: '메시지가 성공적으로 전송되었습니다!',
     },
     footer: {
-      social: '소셜',
+      social: 'SNS',
       email: '이메일',
       discord: 'Discord',
       privacy: '개인정보 보호정책',
