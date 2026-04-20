@@ -33,11 +33,15 @@ export default function Header() {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/20 shadow-lg shadow-primary/5">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" onClick={scrollToTop} className="flex items-center gap-2 group">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
               <img
@@ -54,6 +58,7 @@ export default function Header() {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={scrollToTop}
                 style={
                   !isActive(item.path)
                     ? { animationDelay: `${index * 0.28}s` }
@@ -128,7 +133,10 @@ export default function Header() {
               <Link
                 key={item.path}
                 to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  scrollToTop();
+                  setMobileMenuOpen(false);
+                }}
                 style={
                   !isActive(item.path)
                     ? { animationDelay: `${index * 0.28}s` }

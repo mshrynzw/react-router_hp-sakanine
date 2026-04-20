@@ -229,3 +229,4 @@ npx wrangler pages download config <Pages のプロジェクト名>
   - Twitchから取得する
 - Contact画面
   - 送信先を設定する
+- SEO対策
