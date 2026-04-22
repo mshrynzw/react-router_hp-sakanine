@@ -31,7 +31,7 @@ interface Translations {
     highlights: string;
     niconicoHighlights: string;
     /** ハイライト動画モーダル内のニコニコへのリンク */
-    niconicoOpenExternal: string;
+    openExternal: string;
     /** 再生ボタンの説明（アクセシビリティ） */
     playHighlight: string;
     pastGames: string;
@@ -97,7 +97,7 @@ const translations: Record<Language, Translations> = {
       profile: 'プロフィール',
       highlights: 'ハイライト',
       niconicoHighlights: 'ニコニコ動画 - ベストモーメント',
-      niconicoOpenExternal: 'ニコニコ大百科（外部リンク）',
+      openExternal: '詳細情報（外部リンク）',
       pastGames: '過去のゲーム',
       playHighlight: '動画を再生',
       bio: '2011年から配信を開始。ゲーム配信者として、日々エンターテインメントをお届けしています。主にアクションゲームやRPGを中心に配信中です。現在はTwitchで配信中です。',
@@ -159,7 +159,7 @@ const translations: Record<Language, Translations> = {
       profile: 'Profile',
       highlights: 'Highlights',
       niconicoHighlights: 'NicoNico - Best Moments',
-      niconicoOpenExternal: 'NicoNico Encyclopedia (External Link)',
+      openExternal: 'NicoNico Encyclopedia (External Link)',
       pastGames: 'Past Games',
       playHighlight: 'Play video',
       bio: 'Started streaming in 2011. As a game streamer, I deliver entertainment daily. Streaming mainly action games and RPGs. I\'m currently streaming on Twitch.',
@@ -220,7 +220,7 @@ const translations: Record<Language, Translations> = {
       profile: '个人资料',
       highlights: '精彩集锦',
       niconicoHighlights: 'NicoNico - 精彩时刻',
-      niconicoOpenExternal: 'NicoNico 大百科（外部链接）',
+      openExternal: '详细信息（外部链接）',
       pastGames: 'Past Games',
       playHighlight: '播放视频',
       bio: '配信始于2011年。作为游戏主播，我每天为大家带来娱乐内容。主要直播动作游戏和RPG游戏。我目前正在Twitch上直播。',
@@ -282,7 +282,7 @@ const translations: Record<Language, Translations> = {
       profile: '프로필',
       highlights: '하이라이트',
       niconicoHighlights: 'NicoNico - 베스트 모먼트',
-      niconicoOpenExternal: 'NicoNico 대백과사전（외부 링크）',
+      openExternal: '상세 정보 (외부 링크)',
       pastGames: 'Past Games',
       playHighlight: '동영상 재생',
       bio: '방송 시작일 2011년. 게임 스트리머로서 매일 엔터테인먼트를 제공합니다. 주로 액션 게임과 RPG를 방송합니다. 현재는 Twitch로 전송 중입니다.',

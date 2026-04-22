@@ -3,10 +3,10 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Play } from 'lucide-react';
 import gamelistRaw from '../assets/markdown/gamelist.md?raw';
 import {
-  ABOUT_NICONICO_HIGHLIGHTS,
+  ABOUT_HIGHLIGHTS,
   resolveHighlightThumbnailSrc,
   resolveHighlightVideoSrc,
-} from '../config/aboutNicoHighlights';
+} from '../config/aboutHighlights';
 import {
   Dialog,
   DialogContent,
@@ -47,7 +47,7 @@ export default function AboutPage() {
   const { t } = useLanguage();
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const activeHighlight =
-    playingIndex !== null ? ABOUT_NICONICO_HIGHLIGHTS[playingIndex] : null;
+    playingIndex !== null ? ABOUT_HIGHLIGHTS[playingIndex] : null;
   const activeVideoSrc = activeHighlight
     ? resolveHighlightVideoSrc(activeHighlight)
     : '';
@@ -82,7 +82,7 @@ export default function AboutPage() {
               </p>
               <p className="text-primary hover:underline leading-relaxed max-w-2xl mt-4">
                 <a href="https://dic.nicovideo.jp/l/%E4%B8%96%E7%95%8C%E3%81%AE%E5%B1%81%E3%81%93%E3%81%8D%E9%9A%8A" target="_blank" rel="noopener noreferrer">
-                  {t.about.niconicoOpenExternal}
+                  {t.about.openExternal}
                 </a>
               </p>
 
@@ -113,11 +113,11 @@ export default function AboutPage() {
         </p> */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {ABOUT_NICONICO_HIGHLIGHTS.map((highlight, i) => {
+          {ABOUT_HIGHLIGHTS.map((highlight, i) => {
             const thumbSrc = resolveHighlightThumbnailSrc(highlight);
             return (
               <div
-                key={highlight.nicovideoUrl}
+                key={highlight.videoUrl}
                 className="group relative bg-card/60 backdrop-blur-md rounded-lg overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
               >
               <div className="aspect-video bg-muted/40 relative overflow-hidden">
@@ -131,8 +131,8 @@ export default function AboutPage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-muted/90 via-muted/50 to-muted/30" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
-                <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-xs tracking-wider z-10">
-                  NICONICO
+                <div className={`absolute top-3 right-3 px-3 py-1 rounded-full backdrop-blur-sm text-xs tracking-wider z-10 ${highlight.source === 'nico' ? 'bg-[#3EA6FF]/90' : 'bg-[#9146FF]/90'}`}>
+                  {highlight.source === 'nico' ? 'Niconico' : 'Twitch'}
                 </div>
                 <button
                   type="button"
@@ -149,12 +149,12 @@ export default function AboutPage() {
               <div className="p-4 space-y-2">
                 <p className="tracking-wide">{highlight.title}</p>
                 <a
-                  href={highlight.nicovideoUrl}
+                  href={highlight.videoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-primary hover:underline inline-block"
                 >
-                  {t.about.niconicoOpenExternal}
+                  {t.about.openExternal}
                 </a>
               </div>
             </div>
@@ -203,12 +203,12 @@ export default function AboutPage() {
                 className="w-full rounded-md bg-black"
               />
               <a
-                href={activeHighlight.nicovideoUrl}
+                href={activeHighlight.videoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-primary hover:underline"
               >
-                {t.about.niconicoOpenExternal}
+                {t.about.openExternal}
               </a>
             </>
           )}
