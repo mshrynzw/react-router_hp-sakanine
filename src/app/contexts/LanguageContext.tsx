@@ -44,6 +44,8 @@ interface Translations {
   };
   support: {
     title: string;
+    thankYouHeading: string;
+    thankYouBody: string;
     cta: string;
     modalTitle: string;
     modalMessage: string;
@@ -109,6 +111,9 @@ const translations: Record<Language, Translations> = {
     },
     support: {
       title: 'SUPPORT',
+      thankYouHeading: 'ご支援ありがとうございます！',
+      thankYouBody:
+        'ご支援のおかげで、より良い配信やコンテンツづくりができます。どのような形のご支援も、心より感謝いたします。',
       cta: '応援する / 寄付',
       modalTitle: '応援ありがとうございます',
       modalMessage: 'Doneruを通じて配信を応援していただけます',
@@ -171,6 +176,9 @@ const translations: Record<Language, Translations> = {
     },
     support: {
       title: 'SUPPORT',
+      thankYouHeading: 'Thank You for Your Support!',
+      thankYouBody:
+        'Your support helps me create better content and maintain the stream. Every contribution is greatly appreciated!',
       cta: 'Support / Donate',
       modalTitle: 'Thank You for Your Support',
       modalMessage: 'You can support my stream via Doneru',
@@ -232,6 +240,9 @@ const translations: Record<Language, Translations> = {
     },
     support: {
       title: 'SUPPORT',
+      thankYouHeading: '感谢您的支持！',
+      thankYouBody:
+        '您的支持帮助我创作更好的内容并维持直播。衷心感谢您的每一份心意！',
       cta: '支持 / 捐赠',
       modalTitle: '感谢您的支持',
       modalMessage: '您可以通过Doneru支持我的直播',
@@ -294,6 +305,9 @@ const translations: Record<Language, Translations> = {
     },
     support: {
       title: 'SUPPORT',
+      thankYouHeading: '후원해 주셔서 감사합니다!',
+      thankYouBody:
+        '후원은 더 좋은 콘텐츠 제작과 방송 운영에 큰 힘이 됩니다. 보내주신 마음 모두 감사드립니다.',
       cta: '후원하기 / 기부',
       modalTitle: '후원해 주셔서 감사합니다',
       modalMessage: 'Doneru를 통해 방송을 후원할 수 있습니다',

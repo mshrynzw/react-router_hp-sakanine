@@ -214,7 +214,5 @@ npx wrangler pages download config <Pages のプロジェクト名>
 
 ## TODO
 
-- ヘッダー
-  - メニューの文字が輝くようにする
 - Contact画面
   - 送信先を設定する

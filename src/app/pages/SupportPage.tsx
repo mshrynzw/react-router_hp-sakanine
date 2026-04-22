@@ -22,12 +22,10 @@ export default function SupportPage() {
           <Heart className="w-12 h-12 text-accent" />
         </div>
 
-        <h2 className="mb-4 glow-text">
-          Thank You for Your Support!
-        </h2>
+        <h2 className="mb-4 glow-text">{t.support.thankYouHeading}</h2>
 
         <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
-          Your support helps me create better content and maintain the stream. Every contribution is greatly appreciated!
+          {t.support.thankYouBody}
         </p>
 
         <button
