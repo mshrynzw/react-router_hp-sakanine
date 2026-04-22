@@ -326,13 +326,76 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const GEO_COUNTRY_ENDPOINT =
+  (import.meta.env.VITE_GEO_COUNTRY_ENDPOINT ?? '').trim() ||
+  'https://get.geojs.io/v1/ip/country.json';
+const GEO_COUNTRY_OVERRIDE = (import.meta.env.VITE_GEO_COUNTRY_OVERRIDE ?? '').trim();
+
+function mapCountryCodeToLanguage(countryCode: string): Language {
+  if (countryCode === 'JP') return 'ja';
+  if (countryCode === 'CN') return 'zh';
+  if (countryCode === 'KR') return 'ko';
+  return 'en';
+}
+
+function readCountryOverride(): string | undefined {
+  const fromEnv = GEO_COUNTRY_OVERRIDE.toUpperCase();
+  if (fromEnv) return fromEnv;
+
+  const fromQuery = new URLSearchParams(window.location.search).get('geoCountry');
+  if (fromQuery) return fromQuery.toUpperCase();
+
+  const fromStorage = localStorage.getItem('geoCountryOverride');
+  if (fromStorage) return fromStorage.toUpperCase();
+
+  return undefined;
+}
+
+async function detectLanguageFromCountry(): Promise<Language | undefined> {
+  const overrideCountry = readCountryOverride();
+  if (overrideCountry) return mapCountryCodeToLanguage(overrideCountry);
+
+  const ac = new AbortController();
+  const timeoutId = window.setTimeout(() => ac.abort(), 2500);
+  try {
+    const res = await fetch(GEO_COUNTRY_ENDPOINT, {
+      method: 'GET',
+      signal: ac.signal,
+    });
+    if (!res.ok) return undefined;
+    const data = (await res.json()) as Record<string, unknown>;
+    const country =
+      typeof data.country === 'string'
+        ? data.country
+        : typeof data.countryCode === 'string'
+          ? data.countryCode
+          : typeof data.country_code === 'string'
+            ? data.country_code
+            : undefined;
+    if (!country) return undefined;
+    return mapCountryCodeToLanguage(country.toUpperCase());
+  } catch {
+    return undefined;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
 
 function detectLanguageFromBrowser(): Language {
+  const intlLocale =
+    typeof Intl !== 'undefined'
+      ? Intl.DateTimeFormat().resolvedOptions().locale
+      : undefined;
+  const htmlLang =
+    typeof document !== 'undefined' ? document.documentElement.lang : undefined;
+
   const candidates = [
     ...(navigator.languages ?? []),
     navigator.language,
+    intlLocale,
+    htmlLang,
   ]
-    .filter(Boolean)
+    .filter((lang): lang is string => Boolean(lang))
     .map((lang) => lang.toLowerCase());
 
   for (const lang of candidates) {
@@ -345,18 +408,39 @@ function detectLanguageFromBrowser(): Language {
 }
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => detectLanguageFromBrowser());
+  const [language, setLanguageState] = useState<Language>(() => detectLanguageFromBrowser());
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('language', lang);
+    localStorage.setItem('languagePreferenceMode', 'manual');
+  };
 
   useEffect(() => {
+    const mode = localStorage.getItem('languagePreferenceMode');
     const saved = localStorage.getItem('language') as Language;
-    if (saved && ['ja', 'en', 'zh', 'ko'].includes(saved)) {
-      setLanguage(saved);
+    if (mode === 'manual' && saved && ['ja', 'en', 'zh', 'ko'].includes(saved)) {
+      setLanguageState(saved);
+      return;
     }
-  }, []);
+    const detectedByBrowser = detectLanguageFromBrowser();
+    setLanguageState(detectedByBrowser);
+    localStorage.setItem('language', detectedByBrowser);
+    localStorage.setItem('languagePreferenceMode', 'auto');
 
-  useEffect(() => {
-    localStorage.setItem('language', language);
-  }, [language]);
+    let cancelled = false;
+    void (async () => {
+      const detectedByCountry = await detectLanguageFromCountry();
+      if (cancelled || !detectedByCountry) return;
+      if (localStorage.getItem('languagePreferenceMode') !== 'auto') return;
+      setLanguageState(detectedByCountry);
+      localStorage.setItem('language', detectedByCountry);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t: translations[language] }}>

@@ -43,6 +43,13 @@ interface ImportMetaEnv {
    * `false` / `0` / `no` でオフ。
    */
   readonly VITE_USE_DUMMY_ACTIVITY_THUMBS?: string;
+  /**
+   * アクセス元の国コードを返す API エンドポイント。
+   * 期待するレスポンス例: `{ "country": "JP" }` or `{ "countryCode": "JP" }`
+   */
+  readonly VITE_GEO_COUNTRY_ENDPOINT?: string;
+  /** 開発検証用の国コード上書き（例: `KR`）。設定時はIP判定より優先される。 */
+  readonly VITE_GEO_COUNTRY_OVERRIDE?: string;
 }
 
 declare module 'perlin.js' {
