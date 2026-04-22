@@ -24,10 +24,12 @@ type Env = {
   TWITCH_CLIENT_ID?: string;
   TWITCH_ACCESS_TOKEN?: string;
   ACTIVITY_FEED_CACHE_TTL_SECONDS?: string;
+  ACTIVITY_FEED_MAX_PER_SOURCE?: string;
+  ACTIVITY_FEED_MAX_MERGED?: string;
 };
 
-const MAX_PER_SOURCE = 6;
-const MAX_MERGED = 9;
+const DEFAULT_MAX_PER_SOURCE = 6;
+const DEFAULT_MAX_MERGED = 9;
 const DEFAULT_CACHE_TTL_SECONDS = 120;
 
 function resolveCacheTtlSeconds(env: Env): number {
@@ -35,6 +37,22 @@ function resolveCacheTtlSeconds(env: Env): number {
   if (!raw) return DEFAULT_CACHE_TTL_SECONDS;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_CACHE_TTL_SECONDS;
+  return parsed;
+}
+
+function resolveMaxPerSource(env: Env): number {
+  const raw = (env.ACTIVITY_FEED_MAX_PER_SOURCE ?? '').trim();
+  if (!raw) return DEFAULT_MAX_PER_SOURCE;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_MAX_PER_SOURCE;
+  return parsed;
+}
+
+function resolveMaxMerged(env: Env): number {
+  const raw = (env.ACTIVITY_FEED_MAX_MERGED ?? '').trim();
+  if (!raw) return DEFAULT_MAX_MERGED;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_MAX_MERGED;
   return parsed;
 }
 
@@ -78,9 +96,10 @@ function parseTwitchApiError(status: number, body: unknown): string {
 
 async function fetchYouTubeLatest(
   channelId: string,
-  apiKey: string
+  apiKey: string,
+  maxPerSource: number
 ): Promise<{ items: ActivityItem[]; error?: string }> {
-  const maxResults = MAX_PER_SOURCE;
+  const maxResults = maxPerSource;
   const chUrl = new URL('https://www.googleapis.com/youtube/v3/channels');
   chUrl.searchParams.set('part', 'contentDetails');
   chUrl.searchParams.set('id', channelId);
@@ -164,7 +183,8 @@ async function fetchTwitchUserId(
 async function fetchTwitchLatest(
   login: string,
   clientId: string,
-  accessToken: string
+  accessToken: string,
+  maxPerSource: number
 ): Promise<{ items: ActivityItem[]; error?: string }> {
   const { userId, error: userIdError } = await fetchTwitchUserId(
     login,
@@ -174,7 +194,7 @@ async function fetchTwitchLatest(
   if (!userId) return { items: [], ...(userIdError ? { error: userIdError } : {}) };
 
   const res = await fetch(
-    `https://api.twitch.tv/helix/videos?user_id=${encodeURIComponent(userId)}&first=${MAX_PER_SOURCE}&type=archive`,
+    `https://api.twitch.tv/helix/videos?user_id=${encodeURIComponent(userId)}&first=${maxPerSource}&type=archive`,
     {
       headers: {
         'Client-Id': clientId,
@@ -217,11 +237,14 @@ async function buildActivityFeed(env: Env): Promise<ActivityFetchResult> {
   const twitchClientId = (env.TWITCH_CLIENT_ID ?? '').trim();
   const twitchToken = normalizeToken(env.TWITCH_ACCESS_TOKEN ?? '');
 
+  const maxPerSource = resolveMaxPerSource(env);
+  const maxMerged = resolveMaxMerged(env);
+
   const tasks: Array<Promise<{ source: 'youtube' | 'twitch'; items: ActivityItem[]; error?: string }>> = [];
 
   if (youtubeChannelId && youtubeApiKey) {
     tasks.push(
-      fetchYouTubeLatest(youtubeChannelId, youtubeApiKey)
+      fetchYouTubeLatest(youtubeChannelId, youtubeApiKey, maxPerSource)
         .then((res) => ({ source: 'youtube' as const, ...res }))
         .catch((e: unknown) => ({
           source: 'youtube' as const,
@@ -233,7 +256,7 @@ async function buildActivityFeed(env: Env): Promise<ActivityFetchResult> {
 
   if (twitchLogin && twitchClientId && twitchToken) {
     tasks.push(
-      fetchTwitchLatest(twitchLogin, twitchClientId, twitchToken)
+      fetchTwitchLatest(twitchLogin, twitchClientId, twitchToken, maxPerSource)
         .then((res) => ({ source: 'twitch' as const, ...res }))
         .catch((e: unknown) => ({
           source: 'twitch' as const,
@@ -257,7 +280,7 @@ async function buildActivityFeed(env: Env): Promise<ActivityFetchResult> {
   }
 
   allItems.sort((a, b) => b.publishedAt - a.publishedAt);
-  const items = allItems.slice(0, MAX_MERGED);
+  const items = allItems.slice(0, maxMerged);
   return {
     items,
     ...(youtubeError && items.length === 0 ? { youtubeError } : {}),

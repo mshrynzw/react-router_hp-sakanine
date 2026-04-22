@@ -51,9 +51,20 @@ function formatLocalizedDateTime(
     ko: 'ko-KR',
   };
   return new Intl.DateTimeFormat(localeByLang[lang], {
-    dateStyle: 'medium',
-    timeStyle: 'short',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
   }).format(new Date(publishedAt));
+}
+
+function getWeekdayTextColorClass(publishedAt: number): string {
+  const day = new Date(publishedAt).getDay();
+  if (day === 0) return 'text-red-400';
+  if (day === 6) return 'text-blue-400';
+  return 'text-muted-foreground';
 }
 
 function resolveActivityThumbnail(
@@ -310,7 +321,7 @@ export default function TopPage() {
                   </div>
                   <div className="p-4">
                     <p className="line-clamp-2 mb-2">{card.title}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className={`text-sm ${getWeekdayTextColorClass(card.publishedAt)}`}>
                       {formatLocalizedDateTime(card.publishedAt, language)}
                     </p>
                   </div>
