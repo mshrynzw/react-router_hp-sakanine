@@ -1,11 +1,43 @@
 
   <!DOCTYPE html>
-  <html lang="en">
+  <html lang="ja">
     <head>
       <meta charset="UTF-8" />
       <!-- Vite のビルドで VITE_TWITCH が空のとき（例: Preview 用の変数未設定）のフォールバック。本番は Cloudflare の VITE_TWITCH を推奨 -->
       <meta name="twitch-channel" content="sakanine" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta
+        name="description"
+        content="サカナイン（Sakanine）の公式サイト。配信・動画・最新アクティビティをまとめてチェックできます。"
+      />
+      <meta name="robots" content="index, follow" />
+      <meta name="format-detection" content="telephone=no" />
+      <meta property="og:type" content="website" />
+      <meta property="og:locale" content="ja_JP" />
+      <meta property="og:site_name" content="サカナイン / Sakanine" />
+      <meta property="og:url" content="%VITE_SITE_URL%/" />
+      <meta
+        property="og:title"
+        content="サカナイン / Sakanine （世界のの屁こき隊）"
+      />
+      <meta
+        property="og:description"
+        content="サカナイン（Sakanine）の公式サイト。配信・動画・最新アクティビティをまとめてチェックできます。"
+      />
+      <meta property="og:image" content="%VITE_SITE_URL%/og-image-1200x630.jpg" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta
+        name="twitter:title"
+        content="サカナイン / Sakanine （世界のの屁こき隊）"
+      />
+      <meta
+        name="twitter:description"
+        content="サカナイン（Sakanine）の公式サイト。配信・動画・最新アクティビティをまとめてチェックできます。"
+      />
+      <meta name="twitter:image" content="%VITE_SITE_URL%/og-image-1200x630.jpg" />
+      <link rel="canonical" href="%VITE_SITE_URL%/" />
+      <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
       <title>サカナイン / Sakanine （世界のの屁こき隊）</title>
       <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
     </head>

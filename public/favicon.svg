@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sakanine icon">
+  <rect width="64" height="64" rx="12" fill="#0f172a" />
+  <path
+    d="M14 35c5-9 13-14 24-14 4 0 8 1 11 3l7-5-2 10c0 10-9 18-21 18-4 0-8-1-11-3l-8 5 2-10c-1-1-2-3-2-4z"
+    fill="#22d3ee"
+  />
+  <circle cx="38" cy="28" r="2.5" fill="#0f172a" />
+</svg>
