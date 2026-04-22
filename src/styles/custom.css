@@ -64,14 +64,29 @@
   }
   50% {
     text-shadow:
-      0 0 12px color-mix(in srgb, var(--primary) 55%, transparent),
-      0 0 24px color-mix(in srgb, var(--primary) 26%, transparent),
-      0 0 36px color-mix(in srgb, var(--secondary) 18%, transparent);
+      0 0 10px rgba(37, 99, 235, 0.55),
+      0 0 20px rgba(37, 99, 235, 0.28),
+      0 0 30px rgba(6, 182, 212, 0.2);
   }
 }
 
 .nav-invite-glow {
   animation: nav-invite-glow 3.2s ease-in-out infinite;
+}
+
+@supports (color: color-mix(in srgb, white, black)) {
+  @keyframes nav-invite-glow {
+    0%,
+    100% {
+      text-shadow: 0 0 0 transparent;
+    }
+    50% {
+      text-shadow:
+        0 0 12px color-mix(in srgb, var(--primary) 55%, transparent),
+        0 0 24px color-mix(in srgb, var(--primary) 26%, transparent),
+        0 0 36px color-mix(in srgb, var(--secondary) 18%, transparent);
+    }
+  }
 }
 
 .nav-invite-glow:hover {
