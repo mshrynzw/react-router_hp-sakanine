@@ -40,6 +40,22 @@ function formatRelativeTime(
   });
 }
 
+function formatLocalizedDateTime(
+  publishedAt: number,
+  lang: keyof typeof dateLocales
+): string {
+  const localeByLang: Record<keyof typeof dateLocales, string> = {
+    ja: 'ja-JP',
+    en: 'en-US',
+    zh: 'zh-CN',
+    ko: 'ko-KR',
+  };
+  return new Intl.DateTimeFormat(localeByLang[lang], {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(publishedAt));
+}
+
 function resolveActivityThumbnail(
   item: ActivityItem,
   index: number
@@ -110,15 +126,18 @@ export default function TopPage() {
   const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);
   const [feedLoading, setFeedLoading] = useState(true);
   const [youtubeApiError, setYoutubeApiError] = useState<string | undefined>();
+  const [twitchApiError, setTwitchApiError] = useState<string | undefined>();
 
   useEffect(() => {
     const ac = new AbortController();
     setFeedLoading(true);
     setYoutubeApiError(undefined);
+    setTwitchApiError(undefined);
     fetchLatestActivity(ac.signal)
-      .then(({ items, youtubeError }) => {
+      .then(({ items, youtubeError, twitchError }) => {
         setActivityItems(items);
         setYoutubeApiError(youtubeError);
+        setTwitchApiError(twitchError);
       })
       .finally(() => {
         if (!ac.signal.aborted) setFeedLoading(false);
@@ -242,6 +261,11 @@ export default function TopPage() {
                 {youtubeApiError}
               </p>
             )}
+            {twitchApiError && (
+              <p className="text-sm text-destructive/90 break-words font-mono">
+                {twitchApiError}
+              </p>
+            )}
           </div>
         ) : (
           <div>
@@ -286,11 +310,27 @@ export default function TopPage() {
                   </div>
                   <div className="p-4">
                     <p className="line-clamp-2 mb-2">{card.title}</p>
-                    <p className="text-sm text-muted-foreground">{card.dateLabel}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatLocalizedDateTime(card.publishedAt, language)}
+                    </p>
                   </div>
                 </a>
               ))}
             </div>
+            {(youtubeApiError || twitchApiError) && (
+              <div className="mt-6 text-center space-y-2">
+                {youtubeApiError && (
+                  <p className="text-xs text-destructive/90 break-words font-mono">
+                    {youtubeApiError}
+                  </p>
+                )}
+                {twitchApiError && (
+                  <p className="text-xs text-destructive/90 break-words font-mono">
+                    {twitchApiError}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         )}
       </section>

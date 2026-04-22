@@ -37,6 +37,8 @@ export interface ActivityFetchResult {
   items: ActivityItem[];
   /** YouTube を試みたが失敗したとき（403 等。UI に表示用） */
   youtubeError?: string;
+  /** Twitch を試みたが失敗したとき（401/403 等。UI に表示用） */
+  twitchError?: string;
 }
 
 function twitchThumbUrl(raw: string | undefined | null): string | null {
@@ -55,6 +57,17 @@ function parseGoogleApiError(body: unknown): string {
   if (msg && reason) return `${msg} (${reason})`;
   if (msg) return msg;
   return 'Unknown error';
+}
+
+function normalizeTwitchAccessToken(raw: string): string {
+  return raw.replace(/^Bearer\s+/i, '').trim();
+}
+
+function parseTwitchApiError(status: number, body: unknown): string {
+  const o = body as { message?: string; error?: string };
+  if (o?.message) return `Twitch API ${status}: ${o.message}`;
+  if (o?.error) return `Twitch API ${status}: ${o.error}`;
+  return `Twitch API ${status}: Unknown error`;
 }
 
 /**
@@ -155,7 +168,7 @@ async function fetchTwitchUserId(
   clientId: string,
   accessToken: string,
   signal: AbortSignal | undefined
-): Promise<string | null> {
+): Promise<{ userId: string | null; error?: string }> {
   const res = await fetch(
     `https://api.twitch.tv/helix/users?login=${encodeURIComponent(login)}`,
     {
@@ -166,9 +179,11 @@ async function fetchTwitchUserId(
       },
     }
   );
-  if (!res.ok) return null;
   const data = (await res.json()) as { data?: Array<{ id?: string }> };
-  return data.data?.[0]?.id ?? null;
+  if (!res.ok) {
+    return { userId: null, error: parseTwitchApiError(res.status, data) };
+  }
+  return { userId: data.data?.[0]?.id ?? null };
 }
 
 async function fetchTwitchLatest(
@@ -177,9 +192,14 @@ async function fetchTwitchLatest(
   accessToken: string,
   maxResults: number,
   signal: AbortSignal | undefined
-): Promise<ActivityItem[]> {
-  const userId = await fetchTwitchUserId(login, clientId, accessToken, signal);
-  if (!userId) return [];
+): Promise<{ items: ActivityItem[]; error?: string }> {
+  const { userId, error: userIdError } = await fetchTwitchUserId(
+    login,
+    clientId,
+    accessToken,
+    signal
+  );
+  if (!userId) return { items: [], ...(userIdError ? { error: userIdError } : {}) };
 
   const res = await fetch(
     `https://api.twitch.tv/helix/videos?user_id=${encodeURIComponent(userId)}&first=${maxResults}&type=archive`,
@@ -191,31 +211,35 @@ async function fetchTwitchLatest(
       },
     }
   );
-  if (!res.ok) return [];
-
   const data = (await res.json()) as {
     data?: Array<{
       id?: string;
       title?: string;
       created_at?: string;
+      published_at?: string;
       thumbnail_url?: string;
       url?: string;
     }>;
   };
+  if (!res.ok) {
+    return { items: [], error: parseTwitchApiError(res.status, data) };
+  }
 
-  return (data.data ?? [])
+  const items = (data.data ?? [])
     .map((v) => {
-      if (!v.id || !v.title || !v.created_at || !v.url) return null;
+      const published = v.published_at ?? v.created_at;
+      if (!v.id || !v.title || !published || !v.url) return null;
       return {
         id: v.id,
         platform: 'twitch' as const,
         title: v.title,
-        publishedAt: new Date(v.created_at).getTime(),
+        publishedAt: new Date(published).getTime(),
         thumbnail: twitchThumbUrl(v.thumbnail_url),
         url: v.url,
       };
     })
     .filter((x): x is TwitchFeedRow => x !== null);
+  return { items };
 }
 
 const MAX_PER_SOURCE = 6;
@@ -229,11 +253,16 @@ export async function fetchLatestActivity(
   signal?: AbortSignal
 ): Promise<ActivityFetchResult> {
   const ytKey = (import.meta.env.VITE_YOUTUBE_API_KEY ?? '').trim();
-  const twitchClientId = import.meta.env.VITE_TWITCH_CLIENT_ID ?? '';
-  const twitchToken = import.meta.env.VITE_TWITCH_ACCESS_TOKEN ?? '';
+  const twitchClientId = (import.meta.env.VITE_TWITCH_CLIENT_ID ?? '').trim();
+  const twitchToken = normalizeTwitchAccessToken(
+    import.meta.env.VITE_TWITCH_ACCESS_TOKEN ?? ''
+  );
   const { youtubeChannelId, twitchLogin } = socialIds;
 
-  const tasks: Promise<ActivityItem[] | { items: ActivityItem[]; error?: string }>[] = [];
+  type FeedChunk =
+    | { source: 'youtube'; items: ActivityItem[]; error?: string }
+    | { source: 'twitch'; items: ActivityItem[]; error?: string };
+  const tasks: Promise<FeedChunk>[] = [];
 
   if (youtubeChannelId && ytKey) {
     tasks.push(
@@ -242,11 +271,13 @@ export async function fetchLatestActivity(
         ytKey,
         MAX_PER_SOURCE,
         signal
-      ).catch((e: unknown) => ({
-        items: [] as ActivityItem[],
-        error:
-          e instanceof Error ? e.message : 'YouTube の取得に失敗しました。',
-      }))
+      )
+        .then((res) => ({ source: 'youtube' as const, ...res }))
+        .catch((e: unknown) => ({
+          source: 'youtube' as const,
+          items: [] as ActivityItem[],
+          error: e instanceof Error ? e.message : 'YouTube の取得に失敗しました。',
+        }))
     );
   }
 
@@ -258,7 +289,13 @@ export async function fetchLatestActivity(
         twitchToken,
         MAX_PER_SOURCE,
         signal
-      ).catch(() => [])
+      )
+        .then((res) => ({ source: 'twitch' as const, ...res }))
+        .catch((e: unknown) => ({
+          source: 'twitch' as const,
+          items: [] as ActivityItem[],
+          error: e instanceof Error ? e.message : 'Twitch の取得に失敗しました。',
+        }))
     );
   }
 
@@ -266,15 +303,13 @@ export async function fetchLatestActivity(
 
   const chunks = await Promise.all(tasks);
   let youtubeError: string | undefined;
+  let twitchError: string | undefined;
 
   const flatItems: ActivityItem[] = [];
   for (const chunk of chunks) {
-    if (Array.isArray(chunk)) {
-      flatItems.push(...chunk);
-    } else {
-      flatItems.push(...chunk.items);
-      if (chunk.error) youtubeError = chunk.error;
-    }
+    flatItems.push(...chunk.items);
+    if (chunk.source === 'youtube' && chunk.error) youtubeError = chunk.error;
+    if (chunk.source === 'twitch' && chunk.error) twitchError = chunk.error;
   }
 
   flatItems.sort((a, b) => b.publishedAt - a.publishedAt);
@@ -283,5 +318,6 @@ export async function fetchLatestActivity(
   return {
     items,
     ...(youtubeError && items.length === 0 ? { youtubeError } : {}),
+    ...(twitchError && items.length === 0 ? { twitchError } : {}),
   };
 }
