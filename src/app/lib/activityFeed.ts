@@ -12,6 +12,8 @@ export interface ActivityItem {
   publishedAt: number;
   thumbnail: string | null;
   url: string;
+  /** Twitch duration（秒）。取得できた場合のみ付与 */
+  durationSeconds?: number;
 }
 
 /** API から組み立てた行（型述語用。`ActivityItem` の部分型） */
@@ -31,6 +33,7 @@ type TwitchFeedRow = {
   publishedAt: number;
   thumbnail: string | null;
   url: string;
+  durationSeconds?: number;
 };
 
 export interface ActivityFetchResult {
@@ -68,6 +71,19 @@ function parseTwitchApiError(status: number, body: unknown): string {
   if (o?.message) return `Twitch API ${status}: ${o.message}`;
   if (o?.error) return `Twitch API ${status}: ${o.error}`;
   return `Twitch API ${status}: Unknown error`;
+}
+
+function parseTwitchDurationToSeconds(raw: string | undefined): number | undefined {
+  if (!raw) return undefined;
+  const m = raw.match(
+    /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/i
+  );
+  if (!m) return undefined;
+  const h = Number.parseInt(m[1] ?? '0', 10);
+  const min = Number.parseInt(m[2] ?? '0', 10);
+  const sec = Number.parseInt(m[3] ?? '0', 10);
+  const total = h * 3600 + min * 60 + sec;
+  return total > 0 ? total : undefined;
 }
 
 /**
@@ -219,6 +235,7 @@ async function fetchTwitchLatest(
       published_at?: string;
       thumbnail_url?: string;
       url?: string;
+      duration?: string;
     }>;
   };
   if (!res.ok) {
@@ -236,6 +253,7 @@ async function fetchTwitchLatest(
         publishedAt: new Date(published).getTime(),
         thumbnail: twitchThumbUrl(v.thumbnail_url),
         url: v.url,
+        durationSeconds: parseTwitchDurationToSeconds(v.duration),
       };
     })
     .filter((x): x is TwitchFeedRow => x !== null);

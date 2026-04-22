@@ -22,6 +22,7 @@ import {
 import { fetchLatestActivityFromApi } from '../lib/activityFeedClient';
 
 const useDummyActivityThumbs = isDummyActivityThumbsEnabled();
+const fallbackIconImage = new URL('../assets/images/icon.webp', import.meta.url).href;
 
 const dateLocales = {
   ja,
@@ -115,6 +116,26 @@ function buildActivityCards(
     dateLabel: formatRelativeTime(item.publishedAt, lang),
     url: item.url,
   }));
+}
+
+function ActivityThumbnail({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) {
+  const [useFallback, setUseFallback] = useState(false);
+  return (
+    <img
+      src={useFallback ? fallbackIconImage : src}
+      alt={alt}
+      onError={() => setUseFallback(true)}
+      className={useFallback ? 'w-full h-full object-contain p-2 bg-black/40' : className}
+    />
+  );
 }
 
 export default function TopPage() {
@@ -301,7 +322,7 @@ export default function TopPage() {
                 >
                   <div className="aspect-video bg-muted/30 relative overflow-hidden">
                     {card.thumbnailUrl ? (
-                      <img
+                      <ActivityThumbnail
                         src={card.thumbnailUrl}
                         alt=""
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
