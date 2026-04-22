@@ -17,9 +17,9 @@ import {
   socialProfileUrls,
 } from '../config/socialUrls';
 import {
-  fetchLatestActivity,
   type ActivityItem,
 } from '../lib/activityFeed';
+import { fetchLatestActivityFromApi } from '../lib/activityFeedClient';
 
 const useDummyActivityThumbs = isDummyActivityThumbsEnabled();
 
@@ -133,7 +133,7 @@ export default function TopPage() {
     setFeedLoading(true);
     setYoutubeApiError(undefined);
     setTwitchApiError(undefined);
-    fetchLatestActivity(ac.signal)
+    fetchLatestActivityFromApi(ac.signal)
       .then(({ items, youtubeError, twitchError }) => {
         setActivityItems(items);
         setYoutubeApiError(youtubeError);
