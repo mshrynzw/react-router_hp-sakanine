@@ -2,8 +2,8 @@ import type { ActivityItem } from './activityFeed';
 
 export interface ActivityFetchResult {
   items: ActivityItem[];
-  youtubeError?: string;
   twitchError?: string;
+  xError?: string;
 }
 
 export async function fetchLatestActivityFromApi(
@@ -23,7 +23,7 @@ export async function fetchLatestActivityFromApi(
   const body = (await res.json()) as ActivityFetchResult;
   return {
     items: Array.isArray(body.items) ? body.items : [],
-    ...(body.youtubeError ? { youtubeError: body.youtubeError } : {}),
     ...(body.twitchError ? { twitchError: body.twitchError } : {}),
+    ...(body.xError ? { xError: body.xError } : {}),
   };
 }

@@ -12,20 +12,22 @@ type ActivityItem = {
 
 type ActivityFetchResult = {
   items: ActivityItem[];
-  youtubeError?: string;
   twitchError?: string;
+  xError?: string;
 };
 
 type Env = {
-  VITE_YOUTUBE?: string;
-  YOUTUBE_API_KEY?: string;
   VITE_TWITCH?: string;
   TWITCH_LOGIN?: string;
   TWITCH_CLIENT_ID?: string;
   TWITCH_ACCESS_TOKEN?: string;
+  X_BEARER_TOKEN?: string;
+  X_USER_ID?: string;
   ACTIVITY_FEED_CACHE_TTL_SECONDS?: string;
+  ACTIVITY_FEED_FETCH_INTERVAL_SECONDS?: string;
   ACTIVITY_FEED_MAX_PER_SOURCE?: string;
   ACTIVITY_FEED_MAX_MERGED?: string;
+  ACTIVITY_FEED_X_MAX_RESULTS?: string;
 };
 
 const DEFAULT_MAX_PER_SOURCE = 6;
@@ -33,7 +35,11 @@ const DEFAULT_MAX_MERGED = 9;
 const DEFAULT_CACHE_TTL_SECONDS = 120;
 
 function resolveCacheTtlSeconds(env: Env): number {
-  const raw = (env.ACTIVITY_FEED_CACHE_TTL_SECONDS ?? '').trim();
+  const raw = (
+    env.ACTIVITY_FEED_FETCH_INTERVAL_SECONDS ??
+    env.ACTIVITY_FEED_CACHE_TTL_SECONDS ??
+    ''
+  ).trim();
   if (!raw) return DEFAULT_CACHE_TTL_SECONDS;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_CACHE_TTL_SECONDS;
@@ -53,6 +59,14 @@ function resolveMaxMerged(env: Env): number {
   if (!raw) return DEFAULT_MAX_MERGED;
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_MAX_MERGED;
+  return parsed;
+}
+
+function resolveXMaxResults(env: Env): number {
+  const raw = (env.ACTIVITY_FEED_X_MAX_RESULTS ?? '').trim();
+  if (!raw) return 10;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 10;
   return parsed;
 }
 
@@ -76,17 +90,6 @@ function twitchThumbUrl(raw: string | undefined): string | null {
     .replace(/%\{height\}|\{height\}/g, '360');
 }
 
-function parseGoogleApiError(body: unknown): string {
-  const o = body as {
-    error?: { message?: string; errors?: Array<{ reason?: string }> };
-  };
-  const msg = o.error?.message;
-  const reason = o.error?.errors?.[0]?.reason;
-  if (msg && reason) return `${msg} (${reason})`;
-  if (msg) return msg;
-  return 'Unknown error';
-}
-
 function parseTwitchApiError(status: number, body: unknown): string {
   const o = body as { message?: string; error?: string };
   if (o?.message) return `Twitch API ${status}: ${o.message}`;
@@ -94,72 +97,17 @@ function parseTwitchApiError(status: number, body: unknown): string {
   return `Twitch API ${status}: Unknown error`;
 }
 
-async function fetchYouTubeLatest(
-  channelId: string,
-  apiKey: string,
-  maxPerSource: number
-): Promise<{ items: ActivityItem[]; error?: string }> {
-  const maxResults = maxPerSource;
-  const chUrl = new URL('https://www.googleapis.com/youtube/v3/channels');
-  chUrl.searchParams.set('part', 'contentDetails');
-  chUrl.searchParams.set('id', channelId);
-  chUrl.searchParams.set('key', apiKey);
-
-  const chRes = await fetch(chUrl.toString());
-  const chJson = await chRes.json();
-  if (!chRes.ok) return { items: [], error: parseGoogleApiError(chJson) };
-
-  const uploadsId = (
-    chJson as {
-      items?: Array<{
-        contentDetails?: { relatedPlaylists?: { uploads?: string } };
-      }>;
-    }
-  ).items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-
-  if (!uploadsId) {
-    return { items: [], error: 'YouTube uploads playlist not found.' };
-  }
-
-  const plUrl = new URL('https://www.googleapis.com/youtube/v3/playlistItems');
-  plUrl.searchParams.set('part', 'snippet');
-  plUrl.searchParams.set('playlistId', uploadsId);
-  plUrl.searchParams.set('maxResults', String(maxResults));
-  plUrl.searchParams.set('key', apiKey);
-  const plRes = await fetch(plUrl.toString());
-  const plJson = await plRes.json();
-  if (!plRes.ok) return { items: [], error: parseGoogleApiError(plJson) };
-
-  const rows = (
-    plJson as {
-      items?: Array<{
-        snippet?: {
-          title?: string;
-          publishedAt?: string;
-          thumbnails?: { medium?: { url?: string }; default?: { url?: string } };
-          resourceId?: { videoId?: string };
-        };
-      }>;
-    }
-  ).items;
-
-  const items: ActivityItem[] = [];
-  for (const row of rows ?? []) {
-    const sn = row.snippet;
-    const videoId = sn?.resourceId?.videoId;
-    if (!videoId || !sn?.title || !sn?.publishedAt) continue;
-    const thumb = sn.thumbnails?.medium?.url ?? sn.thumbnails?.default?.url ?? null;
-    items.push({
-      id: videoId,
-      platform: 'youtube',
-      title: sn.title,
-      publishedAt: new Date(sn.publishedAt).getTime(),
-      thumbnail: thumb,
-      url: `https://www.youtube.com/watch?v=${videoId}`,
-    });
-  }
-  return { items };
+function parseXApiError(status: number, body: unknown): string {
+  const o = body as {
+    title?: string;
+    detail?: string;
+    errors?: Array<{ message?: string }>;
+  };
+  const message = o.detail ?? o.errors?.[0]?.message ?? o.title;
+  if (message) return `X API ${status}: ${message}`;
+  return `X API ${status}: Unknown error`;
 }
+
 
 async function fetchTwitchUserId(
   login: string,
@@ -230,29 +178,94 @@ async function fetchTwitchLatest(
   return { items };
 }
 
+async function fetchXLatest(
+  xUserId: string,
+  bearerToken: string,
+  maxResults: number
+): Promise<{ items: ActivityItem[]; error?: string }> {
+  if (!xUserId.trim()) {
+    return { items: [], error: 'X user is not configured. Set X_USER_ID.' };
+  }
+
+  const url = new URL(`https://api.x.com/2/users/${encodeURIComponent(xUserId)}/tweets`);
+  url.searchParams.set('max_results', String(maxResults));
+  url.searchParams.set(
+    'tweet.fields',
+    'created_at,attachments,entities'
+  );
+  url.searchParams.set(
+    'expansions',
+    'attachments.media_keys'
+  );
+  url.searchParams.set(
+    'media.fields',
+    'type,url,preview_image_url'
+  );
+  const res = await fetch(url.toString(), {
+    headers: { Authorization: `Bearer ${bearerToken}` },
+  });
+  const body = (await res.json()) as {
+    data?: Array<{
+      id?: string;
+      text?: string;
+      created_at?: string;
+      entities?: { urls?: Array<{ expanded_url?: string }> };
+      attachments?: { media_keys?: string[] };
+    }>;
+    includes?: {
+      media?: Array<{
+        media_key?: string;
+        type?: string;
+        url?: string;
+        preview_image_url?: string;
+      }>;
+    };
+    title?: string;
+    detail?: string;
+    errors?: Array<{ message?: string }>;
+  };
+  if (!res.ok) return { items: [], error: parseXApiError(res.status, body) };
+
+  const mediaMap = new Map<string, string>();
+  for (const media of body.includes?.media ?? []) {
+    if (!media.media_key) continue;
+    const thumb = media.preview_image_url ?? media.url;
+    if (!thumb) continue;
+    mediaMap.set(media.media_key, thumb);
+  }
+
+  const items: ActivityItem[] = [];
+  for (const tweet of body.data ?? []) {
+    if (!tweet.id || !tweet.text || !tweet.created_at) continue;
+    const title = tweet.text.replace(/\s+/g, ' ').trim();
+    const firstUrl = tweet.entities?.urls?.[0]?.expanded_url;
+    const url = firstUrl ?? `https://x.com/i/web/status/${tweet.id}`;
+    const mediaKey = tweet.attachments?.media_keys?.[0];
+    items.push({
+      id: tweet.id,
+      platform: 'x',
+      title,
+      publishedAt: new Date(tweet.created_at).getTime(),
+      thumbnail: mediaKey ? mediaMap.get(mediaKey) ?? null : null,
+      url,
+    });
+  }
+
+  return { items };
+}
+
 async function buildActivityFeed(env: Env): Promise<ActivityFetchResult> {
-  const youtubeChannelId = (env.VITE_YOUTUBE ?? '').trim();
-  const youtubeApiKey = (env.YOUTUBE_API_KEY ?? '').trim();
   const twitchLogin = (env.TWITCH_LOGIN ?? env.VITE_TWITCH ?? '').trim();
   const twitchClientId = (env.TWITCH_CLIENT_ID ?? '').trim();
   const twitchToken = normalizeToken(env.TWITCH_ACCESS_TOKEN ?? '');
+  const xUserId = (env.X_USER_ID ?? '').trim();
+  const xBearerToken = normalizeToken(env.X_BEARER_TOKEN ?? '');
 
   const maxPerSource = resolveMaxPerSource(env);
   const maxMerged = resolveMaxMerged(env);
+  const xMaxResults = resolveXMaxResults(env);
 
-  const tasks: Array<Promise<{ source: 'youtube' | 'twitch'; items: ActivityItem[]; error?: string }>> = [];
-
-  if (youtubeChannelId && youtubeApiKey) {
-    tasks.push(
-      fetchYouTubeLatest(youtubeChannelId, youtubeApiKey, maxPerSource)
-        .then((res) => ({ source: 'youtube' as const, ...res }))
-        .catch((e: unknown) => ({
-          source: 'youtube' as const,
-          items: [] as ActivityItem[],
-          error: e instanceof Error ? e.message : 'YouTube fetch failed.',
-        }))
-    );
-  }
+  const tasks: Array<Promise<{ source: 'twitch' | 'x'; items: ActivityItem[]; error?: string }>> = [];
 
   if (twitchLogin && twitchClientId && twitchToken) {
     tasks.push(
@@ -265,26 +278,37 @@ async function buildActivityFeed(env: Env): Promise<ActivityFetchResult> {
         }))
     );
   }
+  if (xBearerToken && xUserId) {
+    tasks.push(
+      fetchXLatest(xUserId, xBearerToken, xMaxResults)
+        .then((res) => ({ source: 'x' as const, ...res }))
+        .catch((e: unknown) => ({
+          source: 'x' as const,
+          items: [] as ActivityItem[],
+          error: e instanceof Error ? e.message : 'X fetch failed.',
+        }))
+    );
+  }
 
   if (tasks.length === 0) return { items: [] };
 
   const chunks = await Promise.all(tasks);
   const allItems: ActivityItem[] = [];
-  let youtubeError: string | undefined;
   let twitchError: string | undefined;
+  let xError: string | undefined;
 
   for (const chunk of chunks) {
     allItems.push(...chunk.items);
-    if (chunk.source === 'youtube' && chunk.error) youtubeError = chunk.error;
     if (chunk.source === 'twitch' && chunk.error) twitchError = chunk.error;
+    if (chunk.source === 'x' && chunk.error) xError = chunk.error;
   }
 
   allItems.sort((a, b) => b.publishedAt - a.publishedAt);
   const items = allItems.slice(0, maxMerged);
   return {
     items,
-    ...(youtubeError && items.length === 0 ? { youtubeError } : {}),
     ...(twitchError && items.length === 0 ? { twitchError } : {}),
+    ...(xError && items.length === 0 ? { xError } : {}),
   };
 }
 

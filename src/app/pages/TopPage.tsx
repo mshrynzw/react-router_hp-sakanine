@@ -136,19 +136,19 @@ export default function TopPage() {
 
   const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);
   const [feedLoading, setFeedLoading] = useState(true);
-  const [youtubeApiError, setYoutubeApiError] = useState<string | undefined>();
   const [twitchApiError, setTwitchApiError] = useState<string | undefined>();
+  const [xApiError, setXApiError] = useState<string | undefined>();
 
   useEffect(() => {
     const ac = new AbortController();
     setFeedLoading(true);
-    setYoutubeApiError(undefined);
     setTwitchApiError(undefined);
+    setXApiError(undefined);
     fetchLatestActivityFromApi(ac.signal)
-      .then(({ items, youtubeError, twitchError }) => {
+      .then(({ items, twitchError, xError }) => {
         setActivityItems(items);
-        setYoutubeApiError(youtubeError);
         setTwitchApiError(twitchError);
+        setXApiError(xError);
       })
       .finally(() => {
         if (!ac.signal.aborted) setFeedLoading(false);
@@ -177,11 +177,11 @@ export default function TopPage() {
       const n = DUMMY_IMAGE_URLS_ROTATION.length;
       return Array.from({ length: n }, (_, i) => ({
         id: `dummy-${i}`,
-        platform: i % 2 === 0 ? ('youtube' as const) : ('twitch' as const),
+        platform: i % 2 === 0 ? ('x' as const) : ('twitch' as const),
         title: t.activityFeed.dummyCardTitle,
         publishedAt: Date.now() - i * 86_400_000,
         thumbnail: null,
-        url: i % 2 === 0 ? socialProfileUrls.youtube : socialProfileUrls.twitch,
+        url: i % 2 === 0 ? socialProfileUrls.x : socialProfileUrls.twitch,
       }));
     }
     return [];
@@ -267,14 +267,14 @@ export default function TopPage() {
         ) : activityCards.length === 0 ? (
           <div className="text-center text-muted-foreground py-12 max-w-lg mx-auto leading-relaxed space-y-3">
             <p className="tracking-wide">{t.activityFeed.empty}</p>
-            {youtubeApiError && (
-              <p className="text-sm text-destructive/90 break-words font-mono">
-                {youtubeApiError}
-              </p>
-            )}
             {twitchApiError && (
               <p className="text-sm text-destructive/90 break-words font-mono">
                 {twitchApiError}
+              </p>
+            )}
+            {xApiError && (
+              <p className="text-sm text-destructive/90 break-words font-mono">
+                {xApiError}
               </p>
             )}
           </div>
@@ -328,16 +328,16 @@ export default function TopPage() {
                 </a>
               ))}
             </div>
-            {(youtubeApiError || twitchApiError) && (
+            {(twitchApiError || xApiError) && (
               <div className="mt-6 text-center space-y-2">
-                {youtubeApiError && (
-                  <p className="text-xs text-destructive/90 break-words font-mono">
-                    {youtubeApiError}
-                  </p>
-                )}
                 {twitchApiError && (
                   <p className="text-xs text-destructive/90 break-words font-mono">
                     {twitchApiError}
+                  </p>
+                )}
+                {xApiError && (
+                  <p className="text-xs text-destructive/90 break-words font-mono">
+                    {xApiError}
                   </p>
                 )}
               </div>
