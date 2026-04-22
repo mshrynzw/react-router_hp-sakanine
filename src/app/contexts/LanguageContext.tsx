@@ -327,14 +327,25 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+function detectLanguageFromBrowser(): Language {
+  const candidates = [
+    ...(navigator.languages ?? []),
+    navigator.language,
+  ]
+    .filter(Boolean)
+    .map((lang) => lang.toLowerCase());
+
+  for (const lang of candidates) {
+    if (lang.startsWith('ja')) return 'ja';
+    if (lang.startsWith('zh')) return 'zh';
+    if (lang.startsWith('ko')) return 'ko';
+  }
+
+  return 'en';
+}
+
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    const browserLang = navigator.language.toLowerCase();
-    if (browserLang.startsWith('ja')) return 'ja';
-    if (browserLang.startsWith('zh')) return 'zh';
-    if (browserLang.startsWith('ko')) return 'ko';
-    return 'ja';
-  });
+  const [language, setLanguage] = useState<Language>(() => detectLanguageFromBrowser());
 
   useEffect(() => {
     const saved = localStorage.getItem('language') as Language;
