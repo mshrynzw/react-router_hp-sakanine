@@ -50,7 +50,9 @@ export default function Header() {
                 className="relative w-10 h-10 rounded-lg object-cover border-2 border-primary/30 shadow-lg"
               />
             </div>
-            <span className="tracking-widest hidden sm:block">サカナイン / Sakanine （世界のの屁こき隊）</span>
+            <span className="font-['WDXL_Lubrifont_JP_N',_'Noto_Sans_JP',_sans-serif] tracking-widest hidden sm:block">
+              サカナイン / Sakanine （世界のの屁こき隊）
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">

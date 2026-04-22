@@ -216,7 +216,5 @@ npx wrangler pages download config <Pages のプロジェクト名>
 
 - ヘッダー
   - メニューの文字が輝くようにする
-- Schedule画面
-  - Twitchから取得する
 - Contact画面
   - 送信先を設定する
