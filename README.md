@@ -214,19 +214,11 @@ npx wrangler pages download config <Pages のプロジェクト名>
 
 ## TODO
 
-- 3Dを変える
 - ヘッダー
   - メニューの文字が輝くようにする
-- フッター
-  - DISCORDの位置を変える
-  - SNSのボタンを大きくする
-- TOP画面
-　- Twitchの最新情報を取得する
-　- Xの最新情報を取得する
 - ABOUT画面
   - ハイライトを2か所変える。
 - Schedule画面
   - Twitchから取得する
 - Contact画面
   - 送信先を設定する
-- SEO対策
