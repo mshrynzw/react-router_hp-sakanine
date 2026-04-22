@@ -74,20 +74,7 @@
   animation: nav-invite-glow 3.2s ease-in-out infinite;
 }
 
-@supports (color: color-mix(in srgb, white, black)) {
-  @keyframes nav-invite-glow {
-    0%,
-    100% {
-      text-shadow: 0 0 0 transparent;
-    }
-    50% {
-      text-shadow:
-        0 0 12px color-mix(in srgb, var(--primary) 55%, transparent),
-        0 0 24px color-mix(in srgb, var(--primary) 26%, transparent),
-        0 0 36px color-mix(in srgb, var(--secondary) 18%, transparent);
-    }
-  }
-}
+/* @supports 内に同名 @keyframes を置かない（本番 Lightning CSS が 50% を欠落させる） */
 
 .nav-invite-glow:hover {
   animation-play-state: paused;
