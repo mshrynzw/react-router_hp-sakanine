@@ -74,7 +74,25 @@
   animation: nav-invite-glow 3.2s ease-in-out infinite;
 }
 
-/* @supports 内に同名 @keyframes を置かない（本番 Lightning CSS が 50% を欠落させる） */
+/* themed 版は別名 keyframes（同名二重定義は避ける）。色は theme の *-channel + rgb(.../α)（Lightning 対策） */
+@supports (color: color-mix(in srgb, white, black)) {
+  @keyframes nav-invite-glow-themed {
+    0%,
+    100% {
+      text-shadow: 0 0 0 transparent;
+    }
+    50% {
+      text-shadow:
+        0 0 10px rgb(var(--primary-channel) / 0.99),
+        0 0 20px rgb(var(--primary-channel) / 0.49),
+        0 0 30px rgb(var(--secondary-channel) / 0.25);
+    }
+  }
+
+  .nav-invite-glow {
+    animation: nav-invite-glow-themed 3.2s ease-in-out infinite;
+  }
+}
 
 .nav-invite-glow:hover {
   animation-play-state: paused;

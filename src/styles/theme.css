@@ -9,8 +9,11 @@
   --popover: #0f172a;
   --popover-foreground: #e8eaf0;
   --primary: #2563eb;
+  /* custom.css の nav-invite-glow-themed 用。--primary / --secondary の R G B と揃えること */
+  --primary-channel: 37 99 235;
   --primary-foreground: #ffffff;
   --secondary: #06b6d4;
+  --secondary-channel: 6 182 212;
   --secondary-foreground: #ffffff;
   --muted: rgba(30, 41, 59, 0.5);
   --muted-foreground: #94a3b8;
@@ -51,8 +54,11 @@
   --popover: #0f172a;
   --popover-foreground: #e8eaf0;
   --primary: #2563eb;
+  /* :root と同じく nav-invite-glow-themed 用チャンネル */
+  --primary-channel: 37 99 235;
   --primary-foreground: #ffffff;
   --secondary: #06b6d4;
+  --secondary-channel: 6 182 212;
   --secondary-foreground: #ffffff;
   --muted: rgba(30, 41, 59, 0.5);
   --muted-foreground: #94a3b8;
