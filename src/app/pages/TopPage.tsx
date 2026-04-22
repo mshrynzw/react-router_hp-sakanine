@@ -185,7 +185,7 @@ export default function TopPage() {
       return DUMMY_ACTIVITY_CARD_CONFIGS.map((c, i) => ({
         id: `dummy-${i}`,
         platform: c.platform,
-        tagLabel: c.tag ?? c.platform.toUpperCase(),
+        tagLabel: c.tag ?? c.platform,
         title: c.title,
         publishedAt: c.publishedAt,
         thumbnail: c.thumbnailFile
@@ -331,7 +331,7 @@ export default function TopPage() {
                       <div className="w-full h-full bg-gradient-to-br from-muted/80 to-muted/30" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-xs tracking-wider">
+                    <div className={`absolute top-3 right-3 px-3 py-1 rounded-full backdrop-blur-sm text-xs tracking-wider ${card.tag === 'TWITCH' ? 'bg-[#9146FF]/90' : 'bg-black/90'}`}>
                       {card.tag}
                     </div>
                     {card.thumbnailUrl && (
