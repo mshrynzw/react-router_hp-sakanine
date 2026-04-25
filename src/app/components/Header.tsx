@@ -50,12 +50,13 @@ export default function Header() {
                 className="relative w-10 h-10 rounded-lg object-cover border-2 border-primary/30 shadow-lg"
               />
             </div>
-            <span className="font-['WDXL_Lubrifont_JP_N',_'Noto_Sans_JP',_sans-serif] tracking-widest hidden sm:block">
-              サカナイン / Sakanine （世界のの屁こき隊）
+            <span className="font-['WDXL_Lubrifont_JP_N',_'Noto_Sans_JP',_sans-serif] tracking-widest">
+              <span>サカナイン / Sakanine </span>
+              <span className="hidden xl:inline">（世界のの屁こき隊）</span>
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item, index) => (
               <Link
                 key={item.path}
@@ -120,7 +121,7 @@ export default function Header() {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden w-10 h-10 rounded-lg bg-muted/20 hover:bg-muted/30 border border-primary/20 flex items-center justify-center transition-colors"
+              className="lg:hidden w-10 h-10 rounded-lg bg-muted/20 hover:bg-muted/30 border border-primary/20 flex items-center justify-center transition-colors"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -129,7 +130,7 @@ export default function Header() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-primary/20 bg-background/95 backdrop-blur-md animate-in slide-in-from-top duration-200">
+        <div className="lg:hidden border-t border-primary/20 bg-background/95 backdrop-blur-md animate-in slide-in-from-top duration-200">
           <nav className="px-4 py-4 space-y-2">
             {navItems.map((item, index) => (
               <Link
