@@ -8,7 +8,7 @@ const FALLBACK_TWITCH_LOGIN = 'sakanine';
 const twitch =
   (import.meta.env.VITE_TWITCH && String(import.meta.env.VITE_TWITCH).trim()) ||
   FALLBACK_TWITCH_LOGIN;
-const youtubeChannelId = import.meta.env.VITE_YOUTUBE ?? '';
+const youtubeChannelId = import.meta.env.VITE_YOUTUBE_CHANNEL_ID ?? '';
 const xHandle = import.meta.env.VITE_X ?? '';
 const doneruName = import.meta.env.VITE_DONERU ?? '';
 
@@ -30,11 +30,9 @@ export const socialIds = {
 } as const;
 
 export const socialProfileUrls = {
-  twitch: twitch ? `https://www.twitch.tv/${twitch}` : '#',
-  youtube: youtubeChannelId
-    ? `https://www.youtube.com/channel/${youtubeChannelId}`
-    : '#',
-  x: xHandle ? `https://x.com/${xHandle}` : '#',
+  twitch: twitch ? `https://www.twitch.tv/${twitch}` : 'https://www.twitch.tv',
+  youtube: youtubeChannelId ? `https://www.youtube.com/channel/${youtubeChannelId}` : 'https://www.youtube.com',
+  x: xHandle ? `https://x.com/${xHandle}` : 'https://x.com',
   doneru: doneruName ? `https://doneru.jp/${doneruName}` : 'https://doneru.jp/',
 } as const;
 
