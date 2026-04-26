@@ -109,7 +109,7 @@ function buildActivityCards(
   const sorted = [...items].sort((a, b) => b.publishedAt - a.publishedAt);
   return sorted.map((item, index) => ({
     key: `${item.platform}-${item.id}`,
-    tag: item.tagLabel ?? item.platform.toUpperCase(),
+    tag: item.tagLabel ?? item.platform,
     thumbnailUrl: resolveActivityThumbnail(item, index),
     title: item.title,
     publishedAt: item.publishedAt,
@@ -331,7 +331,7 @@ export default function TopPage() {
                       <div className="w-full h-full bg-gradient-to-br from-muted/80 to-muted/30" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <div className={`absolute top-3 right-3 px-3 py-1 rounded-full backdrop-blur-sm text-xs tracking-wider ${card.tag === 'TWITCH' ? 'bg-[#9146FF]/90' : 'bg-black/90'}`}>
+                    <div className={`absolute top-3 right-3 px-3 py-1 rounded-full backdrop-blur-sm text-xs tracking-wider ${card.tag === 'twitch' ? 'bg-[#9146FF]/90' : 'bg-black/90'}`}>
                       {card.tag}
                     </div>
                     {card.thumbnailUrl && (
