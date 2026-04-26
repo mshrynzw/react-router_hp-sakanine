@@ -109,7 +109,7 @@ function buildActivityCards(
   const sorted = [...items].sort((a, b) => b.publishedAt - a.publishedAt);
   return sorted.map((item, index) => ({
     key: `${item.platform}-${item.id}`,
-    tag: item.tagLabel ?? item.platform,
+    tag: item.tagLabel ?? item.platform.toUpperCase(),
     thumbnailUrl: resolveActivityThumbnail(item, index),
     title: item.title,
     publishedAt: item.publishedAt,
