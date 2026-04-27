@@ -9,7 +9,7 @@ const twitch =
   (import.meta.env.VITE_TWITCH && String(import.meta.env.VITE_TWITCH).trim()) ||
   FALLBACK_TWITCH_LOGIN;
 const youtubeChannelId = import.meta.env.VITE_YOUTUBE_CHANNEL_ID ?? '';
-const xHandle = import.meta.env.VITE_X ?? '';
+const xHandle = (import.meta.env.VITE_X ?? '').trim().replace(/^@+/, '');
 const doneruName = import.meta.env.VITE_DONERU ?? '';
 
 /** 本番ドメイン等を追加で `parent` に渡す（カンマ区切り。カスタムドメインを Pages に割り当てたとき用） */
