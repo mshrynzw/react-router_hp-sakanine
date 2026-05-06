@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-export type Language = 'ja' | 'en' | 'zh' | 'ko';
+export type Language = "ja" | "en" | "zh" | "ko";
 
 interface Translations {
   nav: {
@@ -76,269 +76,273 @@ interface Translations {
 const translations: Record<Language, Translations> = {
   ja: {
     nav: {
-      top: 'TOP',
-      about: 'ABOUT',
-      schedule: 'SCHEDULE',
-      support: 'SUPPORT',
-      contact: 'CONTACT',
+      top: "TOP",
+      about: "ABOUT",
+      schedule: "SCHEDULE",
+      support: "SUPPORT",
+      contact: "CONTACT",
     },
     hero: {
-      live: 'ライブ配信中',
-      offline: 'オフライン',
-      streamerName: 'サカナイン',
+      live: "ライブ配信中",
+      offline: "オフライン",
+      streamerName: "サカナイン",
     },
     activityFeed: {
-      title: '最新アクティビティ',
-      latest: '最新',
-      loading: '読み込み中…',
-      empty: '表示できるアクティビティがありません。APIキー等の設定をご確認ください。',
-      dummyCardTitle: 'プレビュー（ダミー）',
+      title: "最新情報",
+      latest: "最新",
+      loading: "読み込み中…",
+      empty:
+        "表示できるアクティビティがありません。APIキー等の設定をご確認ください。",
+      dummyCardTitle: "プレビュー（ダミー）",
       dummyFeedNotice:
-        'API から取得できなかったため、ローカルのダミー画像で表示しています。',
+        "API から取得できなかったため、ローカルのダミー画像で表示しています。",
     },
     about: {
-      title: 'ABOUT',
-      profile: 'プロフィール',
-      highlights: 'ハイライト',
-      niconicoHighlights: 'ニコニコ動画 - ベストモーメント',
-      openExternal: '詳細情報（外部リンク）',
-      pastGames: '過去のゲーム',
-      playHighlight: '動画を再生',
-      bio: '2011年から配信を開始。ゲーム配信者として、日々エンターテインメントをお届けしています。主にアクションゲームやRPGを中心に配信中です。現在はTwitchで配信中です。',
+      title: "ABOUT",
+      profile: "プロフィール",
+      highlights: "ハイライト",
+      niconicoHighlights: "ニコニコ動画 - ベストモーメント",
+      openExternal: "詳細情報（外部リンク）",
+      pastGames: "過去のゲーム",
+      playHighlight: "動画を再生",
+      bio: "2011年から配信を開始。ゲーム配信者として、日々エンターテインメントをお届けしています。主にアクションゲームやRPGを中心に配信中です。現在はTwitchで配信中です。",
     },
     schedule: {
-      title: '配信スケジュール',
-      upcoming: '今後の配信予定',
-      noSchedule: 'スケジュールは近日公開予定です',
+      title: "配信スケジュール",
+      upcoming: "今後の配信予定",
+      noSchedule: "スケジュールは近日公開予定です",
     },
     support: {
-      title: 'SUPPORT',
-      thankYouHeading: 'ご支援ありがとうございます！',
+      title: "SUPPORT",
+      thankYouHeading: "ご支援ありがとうございます！",
       thankYouBody:
-        'ご支援のおかげで、より良い配信やコンテンツづくりができます。どのような形のご支援も、心より感謝いたします。',
-      cta: 'Doneruで寄付する',
-      shopMessage: 'サカナイングッズはこちら',
-      amazonWishlistMessage: '支援物資（届いた報告はdiscordで行います）',
-      modalTitle: '応援ありがとうございます',
-      modalMessage: 'Doneruを通じて配信を応援していただけます',
-      doneruButton: 'Doneruで応援する',
-      close: '閉じる',
+        "ご支援のおかげで、より良い配信やコンテンツづくりができます。どのような形のご支援も、心より感謝いたします。",
+      cta: "Doneruで寄付する",
+      shopMessage: "サカナイングッズはこちら",
+      amazonWishlistMessage: "支援物資（届いた報告はdiscordで行います）",
+      modalTitle: "応援ありがとうございます",
+      modalMessage: "Doneruを通じて配信を応援していただけます",
+      doneruButton: "Doneruで応援する",
+      close: "閉じる",
     },
     contact: {
-      title: 'CONTACT',
-      intro: '現在、案件のご依頼を募集しております。お気軽にお問い合わせください。',
-      name: '名前',
-      email: 'メールアドレス',
-      message: 'メッセージ',
-      budget: '予算（任意）',
-      submit: '送信',
-      success: 'メッセージを送信しました！',
+      title: "CONTACT",
+      intro:
+        "現在、案件のご依頼を募集しております。お気軽にお問い合わせください。",
+      name: "名前",
+      email: "メールアドレス",
+      message: "メッセージ",
+      budget: "予算（任意）",
+      submit: "送信",
+      success: "メッセージを送信しました！",
     },
     footer: {
-      social: 'SNS',
-      email: 'メール',
-      discord: 'Discord',
-      privacy: 'プライバシーポリシー',
+      social: "SNS",
+      email: "メール",
+      discord: "Discord",
+      privacy: "プライバシーポリシー",
     },
   },
   en: {
     nav: {
-      top: 'TOP',
-      about: 'ABOUT',
-      schedule: 'SCHEDULE',
-      support: 'SUPPORT',
-      contact: 'CONTACT',
+      top: "TOP",
+      about: "ABOUT",
+      schedule: "SCHEDULE",
+      support: "SUPPORT",
+      contact: "CONTACT",
     },
     hero: {
-      live: 'LIVE NOW',
-      offline: 'OFFLINE',
-      streamerName: 'Sakanine',
+      live: "LIVE NOW",
+      offline: "OFFLINE",
+      streamerName: "Sakanine",
     },
     activityFeed: {
-      title: 'Latest Activity',
-      latest: 'Latest',
-      loading: 'Loading…',
-      empty: 'No activity to show. Check your API keys and environment variables.',
-      dummyCardTitle: 'Preview (dummy)',
+      title: "Latest Activity",
+      latest: "Latest",
+      loading: "Loading…",
+      empty:
+        "No activity to show. Check your API keys and environment variables.",
+      dummyCardTitle: "Preview (dummy)",
       dummyFeedNotice:
-        'Could not load activity from the API. Showing local placeholder images.',
+        "Could not load activity from the API. Showing local placeholder images.",
     },
     about: {
-      title: 'ABOUT',
-      profile: 'Profile',
-      highlights: 'Highlights',
-      niconicoHighlights: 'NicoNico - Best Moments',
-      openExternal: 'NicoNico Encyclopedia (External Link)',
-      pastGames: 'Past Games',
-      playHighlight: 'Play video',
-      bio: 'Started streaming in 2011. As a game streamer, I deliver entertainment daily. Streaming mainly action games and RPGs. I\'m currently streaming on Twitch.',
+      title: "ABOUT",
+      profile: "Profile",
+      highlights: "Highlights",
+      niconicoHighlights: "NicoNico - Best Moments",
+      openExternal: "NicoNico Encyclopedia (External Link)",
+      pastGames: "Past Games",
+      playHighlight: "Play video",
+      bio: "Started streaming in 2011. As a game streamer, I deliver entertainment daily. Streaming mainly action games and RPGs. I'm currently streaming on Twitch.",
     },
     schedule: {
-      title: 'Stream Schedule',
-      upcoming: 'Upcoming Streams',
-      noSchedule: 'Schedule coming soon',
+      title: "Stream Schedule",
+      upcoming: "Upcoming Streams",
+      noSchedule: "Schedule coming soon",
     },
     support: {
-      title: 'SUPPORT',
-      thankYouHeading: 'Thank You for Your Support!',
+      title: "SUPPORT",
+      thankYouHeading: "Thank You for Your Support!",
       thankYouBody:
-        'Your support helps me create better content and maintain the stream. Every contribution is greatly appreciated!',
-      cta: 'Support via Doneru',
-      shopMessage: 'Shop Link',
-      amazonWishlistMessage: 'Amazon Wishlist Link',
-      modalTitle: 'Thank You for Your Support',
-      modalMessage: 'You can support my stream via Doneru',
-      doneruButton: 'Support via Doneru',
-      close: 'Close',
+        "Your support helps me create better content and maintain the stream. Every contribution is greatly appreciated!",
+      cta: "Support via Doneru",
+      shopMessage: "Shop Link",
+      amazonWishlistMessage: "Amazon Wishlist Link",
+      modalTitle: "Thank You for Your Support",
+      modalMessage: "You can support my stream via Doneru",
+      doneruButton: "Support via Doneru",
+      close: "Close",
     },
     contact: {
-      title: 'CONTACT',
-      intro: "I'm open to commissions and project work. Feel free to reach out.",
-      name: 'Name',
-      email: 'Email',
-      message: 'Message',
-      budget: 'Budget (Optional)',
-      submit: 'Submit',
-      success: 'Message sent successfully!',
+      title: "CONTACT",
+      intro:
+        "I'm open to commissions and project work. Feel free to reach out.",
+      name: "Name",
+      email: "Email",
+      message: "Message",
+      budget: "Budget (Optional)",
+      submit: "Submit",
+      success: "Message sent successfully!",
     },
     footer: {
-      social: 'SNS',
-      email: 'Email',
-      discord: 'Discord',
-      privacy: 'Privacy Policy',
+      social: "SNS",
+      email: "Email",
+      discord: "Discord",
+      privacy: "Privacy Policy",
     },
   },
   zh: {
     nav: {
-      top: 'TOP',
-      about: 'ABOUT',
-      schedule: 'SCHEDULE',
-      support: 'SUPPORT',
-      contact: 'CONTACT',
+      top: "TOP",
+      about: "ABOUT",
+      schedule: "SCHEDULE",
+      support: "SUPPORT",
+      contact: "CONTACT",
     },
     hero: {
-      live: '正在直播',
-      offline: '离线',
-      streamerName: 'Sakanine',
+      live: "正在直播",
+      offline: "离线",
+      streamerName: "Sakanine",
     },
     activityFeed: {
-      title: '最新动态',
-      latest: '最新',
-      loading: '加载中…',
-      empty: '暂无动态。请检查 API 密钥与环境变量配置。',
-      dummyCardTitle: '预览（占位）',
-      dummyFeedNotice: '无法从 API 获取动态，正在显示本地占位图片。',
+      title: "最新动态",
+      latest: "最新",
+      loading: "加载中…",
+      empty: "暂无动态。请检查 API 密钥与环境变量配置。",
+      dummyCardTitle: "预览（占位）",
+      dummyFeedNotice: "无法从 API 获取动态，正在显示本地占位图片。",
     },
     about: {
-      title: 'ABOUT',
-      profile: '个人资料',
-      highlights: '精彩集锦',
-      niconicoHighlights: 'NicoNico - 精彩时刻',
-      openExternal: '详细信息（外部链接）',
-      pastGames: 'Past Games',
-      playHighlight: '播放视频',
-      bio: '配信始于2011年。作为游戏主播，我每天为大家带来娱乐内容。主要直播动作游戏和RPG游戏。我目前正在Twitch上直播。',
+      title: "ABOUT",
+      profile: "个人资料",
+      highlights: "精彩集锦",
+      niconicoHighlights: "NicoNico - 精彩时刻",
+      openExternal: "详细信息（外部链接）",
+      pastGames: "Past Games",
+      playHighlight: "播放视频",
+      bio: "配信始于2011年。作为游戏主播，我每天为大家带来娱乐内容。主要直播动作游戏和RPG游戏。我目前正在Twitch上直播。",
     },
     schedule: {
-      title: '直播时间表',
-      upcoming: '即将直播',
-      noSchedule: '时间表即将公布',
+      title: "直播时间表",
+      upcoming: "即将直播",
+      noSchedule: "时间表即将公布",
     },
     support: {
-      title: 'SUPPORT',
-      thankYouHeading: '感谢您的支持！',
+      title: "SUPPORT",
+      thankYouHeading: "感谢您的支持！",
       thankYouBody:
-        '您的支持帮助我创作更好的内容并维持直播。衷心感谢您的每一份心意！',
-      cta: '通过Doneru支持',
-      shopMessage: '商店链接',
-      amazonWishlistMessage: 'Amazon 愿望清单链接',
-      modalTitle: '感谢您的支持',
-      modalMessage: '您可以通过Doneru支持我的直播',
-      doneruButton: '通过Doneru支持',
-      close: '关闭',
+        "您的支持帮助我创作更好的内容并维持直播。衷心感谢您的每一份心意！",
+      cta: "通过Doneru支持",
+      shopMessage: "商店链接",
+      amazonWishlistMessage: "Amazon 愿望清单链接",
+      modalTitle: "感谢您的支持",
+      modalMessage: "您可以通过Doneru支持我的直播",
+      doneruButton: "通过Doneru支持",
+      close: "关闭",
     },
     contact: {
-      title: 'CONTACT',
-      intro: '目前正接受项目与合作咨询，欢迎与我们联系。',
-      name: '姓名',
-      email: '邮箱',
-      message: '消息',
-      budget: '预算（可选）',
-      submit: '提交',
-      success: '消息发送成功！',
+      title: "CONTACT",
+      intro: "目前正接受项目与合作咨询，欢迎与我们联系。",
+      name: "姓名",
+      email: "邮箱",
+      message: "消息",
+      budget: "预算（可选）",
+      submit: "提交",
+      success: "消息发送成功！",
     },
     footer: {
-      social: 'SNS',
-      email: '邮箱',
-      discord: 'Discord',
-      privacy: '隐私政策',
+      social: "SNS",
+      email: "邮箱",
+      discord: "Discord",
+      privacy: "隐私政策",
     },
   },
   ko: {
     nav: {
-      top: 'TOP',
-      about: 'ABOUT',
-      schedule: 'SCHEDULE',
-      support: 'SUPPORT',
-      contact: 'CONTACT',
+      top: "TOP",
+      about: "ABOUT",
+      schedule: "SCHEDULE",
+      support: "SUPPORT",
+      contact: "CONTACT",
     },
     hero: {
-      live: '라이브 중',
-      offline: '오프라인',
-      streamerName: 'Sakanine',
+      live: "라이브 중",
+      offline: "오프라인",
+      streamerName: "Sakanine",
     },
     activityFeed: {
-      title: '최신 활동',
-      latest: '최신',
-      loading: '불러오는 중…',
-      empty: '표시할 활동이 없습니다. API 키와 환경 변수를 확인해 주세요.',
-      dummyCardTitle: '미리보기(더미)',
+      title: "최신 활동",
+      latest: "최신",
+      loading: "불러오는 중…",
+      empty: "표시할 활동이 없습니다. API 키와 환경 변수를 확인해 주세요.",
+      dummyCardTitle: "미리보기(더미)",
       dummyFeedNotice:
-        'API에서 활동을 불러오지 못해 로컬 더미 이미지로 표시합니다.',
+        "API에서 활동을 불러오지 못해 로컬 더미 이미지로 표시합니다.",
     },
     about: {
-      title: 'ABOUT',
-      profile: '프로필',
-      highlights: '하이라이트',
-      niconicoHighlights: 'NicoNico - 베스트 모먼트',
-      openExternal: '상세 정보 (외부 링크)',
-      pastGames: 'Past Games',
-      playHighlight: '동영상 재생',
-      bio: '방송 시작일 2011년. 게임 스트리머로서 매일 엔터테인먼트를 제공합니다. 주로 액션 게임과 RPG를 방송합니다. 현재는 Twitch로 전송 중입니다.',
+      title: "ABOUT",
+      profile: "프로필",
+      highlights: "하이라이트",
+      niconicoHighlights: "NicoNico - 베스트 모먼트",
+      openExternal: "상세 정보 (외부 링크)",
+      pastGames: "Past Games",
+      playHighlight: "동영상 재생",
+      bio: "방송 시작일 2011년. 게임 스트리머로서 매일 엔터테인먼트를 제공합니다. 주로 액션 게임과 RPG를 방송합니다. 현재는 Twitch로 전송 중입니다.",
     },
     schedule: {
-      title: '방송 일정',
-      upcoming: '다가오는 방송',
-      noSchedule: '일정이 곧 공개됩니다',
+      title: "방송 일정",
+      upcoming: "다가오는 방송",
+      noSchedule: "일정이 곧 공개됩니다",
     },
     support: {
-      title: 'SUPPORT',
-      thankYouHeading: '후원해 주셔서 감사합니다!',
+      title: "SUPPORT",
+      thankYouHeading: "후원해 주셔서 감사합니다!",
       thankYouBody:
-        '후원은 더 좋은 콘텐츠 제작과 방송 운영에 큰 힘이 됩니다. 보내주신 마음 모두 감사드립니다.',
-      cta: 'Doneru로 후원하기',
-      shopMessage: '상점 링크',
-      amazonWishlistMessage: 'Amazon 願望清單鏈接',
-      modalTitle: '후원해 주셔서 감사합니다',
-      modalMessage: 'Doneru를 통해 방송을 후원할 수 있습니다',
-      doneruButton: 'Doneru로 후원하기',
-      close: '닫기',
+        "후원은 더 좋은 콘텐츠 제작과 방송 운영에 큰 힘이 됩니다. 보내주신 마음 모두 감사드립니다.",
+      cta: "Doneru로 후원하기",
+      shopMessage: "상점 링크",
+      amazonWishlistMessage: "Amazon 願望清單鏈接",
+      modalTitle: "후원해 주셔서 감사합니다",
+      modalMessage: "Doneru를 통해 방송을 후원할 수 있습니다",
+      doneruButton: "Doneru로 후원하기",
+      close: "닫기",
     },
     contact: {
-      title: 'CONTACT',
-      intro: '현재 프로젝트·의뢰를 받고 있습니다. 편하게 문의해 주세요.',
-      name: '이름',
-      email: '이메일',
-      message: '메시지',
-      budget: '예산 (선택사항)',
-      submit: '제출',
-      success: '메시지가 성공적으로 전송되었습니다!',
+      title: "CONTACT",
+      intro: "현재 프로젝트·의뢰를 받고 있습니다. 편하게 문의해 주세요.",
+      name: "이름",
+      email: "이메일",
+      message: "메시지",
+      budget: "예산 (선택사항)",
+      submit: "제출",
+      success: "메시지가 성공적으로 전송되었습니다!",
     },
     footer: {
-      social: 'SNS',
-      email: '이메일',
-      discord: 'Discord',
-      privacy: '개인정보 보호정책',
+      social: "SNS",
+      email: "이메일",
+      discord: "Discord",
+      privacy: "개인정보 보호정책",
     },
   },
 };
@@ -349,27 +353,33 @@ interface LanguageContextType {
   t: Translations;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined,
+);
 const GEO_COUNTRY_ENDPOINT =
-  (import.meta.env.VITE_GEO_COUNTRY_ENDPOINT ?? '').trim() ||
-  'https://get.geojs.io/v1/ip/country.json';
-const GEO_COUNTRY_OVERRIDE = (import.meta.env.VITE_GEO_COUNTRY_OVERRIDE ?? '').trim();
+  (import.meta.env.VITE_GEO_COUNTRY_ENDPOINT ?? "").trim() ||
+  "https://get.geojs.io/v1/ip/country.json";
+const GEO_COUNTRY_OVERRIDE = (
+  import.meta.env.VITE_GEO_COUNTRY_OVERRIDE ?? ""
+).trim();
 
 function mapCountryCodeToLanguage(countryCode: string): Language {
-  if (countryCode === 'JP') return 'ja';
-  if (countryCode === 'CN') return 'zh';
-  if (countryCode === 'KR') return 'ko';
-  return 'en';
+  if (countryCode === "JP") return "ja";
+  if (countryCode === "CN") return "zh";
+  if (countryCode === "KR") return "ko";
+  return "en";
 }
 
 function readCountryOverride(): string | undefined {
   const fromEnv = GEO_COUNTRY_OVERRIDE.toUpperCase();
   if (fromEnv) return fromEnv;
 
-  const fromQuery = new URLSearchParams(window.location.search).get('geoCountry');
+  const fromQuery = new URLSearchParams(window.location.search).get(
+    "geoCountry",
+  );
   if (fromQuery) return fromQuery.toUpperCase();
 
-  const fromStorage = localStorage.getItem('geoCountryOverride');
+  const fromStorage = localStorage.getItem("geoCountryOverride");
   if (fromStorage) return fromStorage.toUpperCase();
 
   return undefined;
@@ -383,17 +393,17 @@ async function detectLanguageFromCountry(): Promise<Language | undefined> {
   const timeoutId = window.setTimeout(() => ac.abort(), 2500);
   try {
     const res = await fetch(GEO_COUNTRY_ENDPOINT, {
-      method: 'GET',
+      method: "GET",
       signal: ac.signal,
     });
     if (!res.ok) return undefined;
     const data = (await res.json()) as Record<string, unknown>;
     const country =
-      typeof data.country === 'string'
+      typeof data.country === "string"
         ? data.country
-        : typeof data.countryCode === 'string'
+        : typeof data.countryCode === "string"
           ? data.countryCode
-          : typeof data.country_code === 'string'
+          : typeof data.country_code === "string"
             ? data.country_code
             : undefined;
     if (!country) return undefined;
@@ -407,11 +417,11 @@ async function detectLanguageFromCountry(): Promise<Language | undefined> {
 
 function detectLanguageFromBrowser(): Language {
   const intlLocale =
-    typeof Intl !== 'undefined'
+    typeof Intl !== "undefined"
       ? Intl.DateTimeFormat().resolvedOptions().locale
       : undefined;
   const htmlLang =
-    typeof document !== 'undefined' ? document.documentElement.lang : undefined;
+    typeof document !== "undefined" ? document.documentElement.lang : undefined;
 
   const candidates = [
     ...(navigator.languages ?? []),
@@ -423,42 +433,50 @@ function detectLanguageFromBrowser(): Language {
     .map((lang) => lang.toLowerCase());
 
   for (const lang of candidates) {
-    if (lang.startsWith('ja')) return 'ja';
-    if (lang.startsWith('zh')) return 'zh';
-    if (lang.startsWith('ko')) return 'ko';
+    if (lang.startsWith("ja")) return "ja";
+    if (lang.startsWith("zh")) return "zh";
+    if (lang.startsWith("ko")) return "ko";
   }
 
-  return 'en';
+  return "en";
 }
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(() => detectLanguageFromBrowser());
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [language, setLanguageState] = useState<Language>(() =>
+    detectLanguageFromBrowser(),
+  );
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('language', lang);
-    localStorage.setItem('languagePreferenceMode', 'manual');
+    localStorage.setItem("language", lang);
+    localStorage.setItem("languagePreferenceMode", "manual");
   };
 
   useEffect(() => {
-    const mode = localStorage.getItem('languagePreferenceMode');
-    const saved = localStorage.getItem('language') as Language;
-    if (mode === 'manual' && saved && ['ja', 'en', 'zh', 'ko'].includes(saved)) {
+    const mode = localStorage.getItem("languagePreferenceMode");
+    const saved = localStorage.getItem("language") as Language;
+    if (
+      mode === "manual" &&
+      saved &&
+      ["ja", "en", "zh", "ko"].includes(saved)
+    ) {
       setLanguageState(saved);
       return;
     }
     const detectedByBrowser = detectLanguageFromBrowser();
     setLanguageState(detectedByBrowser);
-    localStorage.setItem('language', detectedByBrowser);
-    localStorage.setItem('languagePreferenceMode', 'auto');
+    localStorage.setItem("language", detectedByBrowser);
+    localStorage.setItem("languagePreferenceMode", "auto");
 
     let cancelled = false;
     void (async () => {
       const detectedByCountry = await detectLanguageFromCountry();
       if (cancelled || !detectedByCountry) return;
-      if (localStorage.getItem('languagePreferenceMode') !== 'auto') return;
+      if (localStorage.getItem("languagePreferenceMode") !== "auto") return;
       setLanguageState(detectedByCountry);
-      localStorage.setItem('language', detectedByCountry);
+      localStorage.setItem("language", detectedByCountry);
     })();
 
     return () => {
@@ -467,7 +485,9 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t: translations[language] }}>
+    <LanguageContext.Provider
+      value={{ language, setLanguage, t: translations[language] }}
+    >
       {children}
     </LanguageContext.Provider>
   );
@@ -476,7 +496,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error('useLanguage must be used within LanguageProvider');
+    throw new Error("useLanguage must be used within LanguageProvider");
   }
   return context;
 };

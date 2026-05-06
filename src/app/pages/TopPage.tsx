@@ -1,28 +1,27 @@
-import { useMemo, useState, useEffect } from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { ja, enUS, zhCN, ko } from 'date-fns/locale';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Play } from 'lucide-react';
+import { useMemo, useState, useEffect } from "react";
+import { formatDistanceToNow } from "date-fns";
+import { ja, enUS, zhCN, ko } from "date-fns/locale";
+import { useLanguage } from "../contexts/LanguageContext";
+import { Play } from "lucide-react";
 import {
   DUMMY_IMAGE_URLS_ROTATION,
   getDummyImageUrlByFileName,
-} from '../config/dummyAssets';
+} from "../config/dummyAssets";
 import {
   DUMMY_ACTIVITY_CARD_CONFIGS,
   isDummyActivityThumbsEnabled,
-} from '../config/dummyActivityFeed';
+} from "../config/dummyActivityFeed";
 import {
   buildTwitchPlayerEmbedSrc,
   extraTwitchEmbedParentsFromEnv,
   socialProfileUrls,
-} from '../config/socialUrls';
-import {
-  type ActivityItem,
-} from '../lib/activityFeed';
-import { fetchLatestActivityFromApi } from '../lib/activityFeedClient';
+} from "../config/socialUrls";
+import { type ActivityItem } from "../lib/activityFeed";
+import { fetchLatestActivityFromApi } from "../lib/activityFeedClient";
 
 const useDummyActivityThumbs = isDummyActivityThumbsEnabled();
-const fallbackIconImage = new URL('../assets/images/icon.webp', import.meta.url).href;
+const fallbackIconImage = new URL("../assets/images/icon.webp", import.meta.url)
+  .href;
 
 const dateLocales = {
   ja,
@@ -33,7 +32,7 @@ const dateLocales = {
 
 function formatRelativeTime(
   publishedAt: number,
-  lang: keyof typeof dateLocales
+  lang: keyof typeof dateLocales,
 ): string {
   return formatDistanceToNow(new Date(publishedAt), {
     addSuffix: true,
@@ -43,34 +42,34 @@ function formatRelativeTime(
 
 function formatLocalizedDateTime(
   publishedAt: number,
-  lang: keyof typeof dateLocales
+  lang: keyof typeof dateLocales,
 ): string {
   const localeByLang: Record<keyof typeof dateLocales, string> = {
-    ja: 'ja-JP',
-    en: 'en-US',
-    zh: 'zh-CN',
-    ko: 'ko-KR',
+    ja: "ja-JP",
+    en: "en-US",
+    zh: "zh-CN",
+    ko: "ko-KR",
   };
   return new Intl.DateTimeFormat(localeByLang[lang], {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    weekday: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
   }).format(new Date(publishedAt));
 }
 
 function getWeekdayTextColorClass(publishedAt: number): string {
   const day = new Date(publishedAt).getDay();
-  if (day === 0) return 'text-red-400';
-  if (day === 6) return 'text-blue-400';
-  return 'text-muted-foreground';
+  if (day === 0) return "text-red-400";
+  if (day === 6) return "text-blue-400";
+  return "text-muted-foreground";
 }
 
 function resolveActivityThumbnail(
   item: ActivityItem,
-  index: number
+  index: number,
 ): string | null {
   if (useDummyActivityThumbs) {
     if (item.thumbnail) return item.thumbnail;
@@ -104,7 +103,7 @@ type ActivityCardView = {
 
 function buildActivityCards(
   items: ActivityItem[],
-  lang: keyof typeof dateLocales
+  lang: keyof typeof dateLocales,
 ): ActivityCardView[] {
   const sorted = [...items].sort((a, b) => b.publishedAt - a.publishedAt);
   return sorted.map((item, index) => ({
@@ -133,7 +132,9 @@ function ActivityThumbnail({
       src={useFallback ? fallbackIconImage : src}
       alt={alt}
       onError={() => setUseFallback(true)}
-      className={useFallback ? 'w-full h-full object-contain p-2 bg-black/40' : className}
+      className={
+        useFallback ? "w-full h-full object-contain p-2 bg-black/40" : className
+      }
     />
   );
 }
@@ -143,8 +144,10 @@ export default function TopPage() {
   const [twitchIsLive, setTwitchIsLive] = useState(false);
   /** Twitch は `parent` が必須のため、マウント後に hostname を確実に含めて組み立てる */
   const [twitchEmbed, setTwitchEmbed] = useState<
-    { status: 'pending' } | { status: 'ready'; src: string } | { status: 'missing' }
-  >({ status: 'pending' });
+    | { status: "pending" }
+    | { status: "ready"; src: string }
+    | { status: "missing" }
+  >({ status: "pending" });
 
   useEffect(() => {
     const parents = [
@@ -152,7 +155,7 @@ export default function TopPage() {
       ...extraTwitchEmbedParentsFromEnv(),
     ];
     const src = buildTwitchPlayerEmbedSrc(parents);
-    setTwitchEmbed(src ? { status: 'ready', src } : { status: 'missing' });
+    setTwitchEmbed(src ? { status: "ready", src } : { status: "missing" });
   }, []);
 
   const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);
@@ -170,7 +173,7 @@ export default function TopPage() {
         setActivityItems(items);
         setTwitchApiError(twitchError);
         setXApiError(xError);
-        if (typeof twitchLive === 'boolean') setTwitchIsLive(twitchLive);
+        if (typeof twitchLive === "boolean") setTwitchIsLive(twitchLive);
       })
       .finally(() => {
         if (!ac.signal.aborted) setFeedLoading(false);
@@ -199,7 +202,7 @@ export default function TopPage() {
       const n = DUMMY_IMAGE_URLS_ROTATION.length;
       return Array.from({ length: n }, (_, i) => ({
         id: `dummy-${i}`,
-        platform: i % 2 === 0 ? ('x' as const) : ('twitch' as const),
+        platform: i % 2 === 0 ? ("x" as const) : ("twitch" as const),
         title: t.activityFeed.dummyCardTitle,
         publishedAt: Date.now() - i * 86_400_000,
         thumbnail: null,
@@ -218,70 +221,17 @@ export default function TopPage() {
   /** タグ・サムネ・タイトル・日付をまとめた表示用配列（publishedAt 降順＝最新が先頭） */
   const activityCards = useMemo(
     () => buildActivityCards(displayedActivityItems, language),
-    [displayedActivityItems, language]
+    [displayedActivityItems, language],
   );
 
   return (
     <div className="w-full">
-      <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-transparent" />
-        <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at center, rgba(37, 99, 235, 0.15) 0%, transparent 70%)',
-        }} />
-
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-4">
-          <div className="aspect-video w-full min-h-[200px] rounded-lg overflow-hidden border border-primary/30 shadow-2xl shadow-primary/20 bg-black/50 backdrop-blur-sm">
-            {twitchEmbed.status === 'pending' && (
-              <div
-                className="flex h-full min-h-[12rem] items-center justify-center bg-black/40 text-muted-foreground text-sm"
-                aria-hidden
-              >
-                …
-              </div>
-            )}
-            {twitchEmbed.status === 'ready' && (
-              <iframe
-                src={twitchEmbed.src}
-                className="block w-full h-full border-0"
-                title="Twitch live embed"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                allowFullScreen
-              />
-            )}
-            {twitchEmbed.status === 'missing' && (
-              <div className="flex h-full min-h-[12rem] items-center justify-center px-4 text-center text-muted-foreground text-sm">
-                <a
-                  href={socialProfileUrls.twitch}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary underline underline-offset-4 hover:opacity-90"
-                >
-                  Twitch
-                </a>
-                <span className="mx-1">（</span>
-                <span>VITE_TWITCH 未設定のため埋め込みなし</span>
-                <span className="mx-1">）</span>
-              </div>
-            )}
-          </div>
-
-          <div className="mt-6 text-center">
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-card/80 backdrop-blur-md border border-primary/30">
-              <div className={`w-3 h-3 rounded-full ${twitchIsLive ? 'bg-destructive animate-pulse' : 'bg-muted'}`} />
-              <span className="tracking-wider">{twitchIsLive ? t.hero.live : t.hero.offline}</span>
-            </div>
-            {/* <h1 className="mt-4 tracking-wider glow-text">{t.hero.streamerName}</h1> */}
-          </div>
-        </div>
-      </section>
-
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center gap-3 mb-8">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
           <h2 className="tracking-widest">{t.activityFeed.title}</h2>
           <div className="h-px flex-1 bg-gradient-to-r from-primary via-primary to-transparent" />
         </div>
-
         {feedLoading ? (
           <p className="text-center text-muted-foreground py-12 tracking-wide">
             {t.activityFeed.loading}
@@ -332,18 +282,25 @@ export default function TopPage() {
                       <div className="w-full h-full bg-gradient-to-br from-muted/80 to-muted/30" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <div className={`absolute top-3 right-3 px-3 py-1 rounded-full backdrop-blur-sm text-xs tracking-wider ${card.tag === 'TWITCH' ? 'bg-[#9146FF]/90' : 'bg-black/90'}`}>
+                    <div
+                      className={`absolute top-3 right-3 px-3 py-1 rounded-full backdrop-blur-sm text-xs tracking-wider ${card.tag === "TWITCH" ? "bg-[#9146FF]/90" : "bg-black/90"}`}
+                    >
                       {card.tag}
                     </div>
                     {card.thumbnailUrl && (
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        <Play className="w-12 h-12 text-primary drop-shadow-lg" fill="currentColor" />
+                        <Play
+                          className="w-12 h-12 text-primary drop-shadow-lg"
+                          fill="currentColor"
+                        />
                       </div>
                     )}
                   </div>
                   <div className="p-4">
                     <p className="line-clamp-2 mb-2">{card.title}</p>
-                    <p className={`text-sm ${getWeekdayTextColorClass(card.publishedAt)}`}>
+                    <p
+                      className={`text-sm ${getWeekdayTextColorClass(card.publishedAt)}`}
+                    >
                       {formatLocalizedDateTime(card.publishedAt, language)}
                     </p>
                   </div>
@@ -366,6 +323,62 @@ export default function TopPage() {
             )}
           </div>
         )}
+      </section>
+
+      <section className="relative items-center justify-center overflow-hidden">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
+          <h2 className="tracking-widest">Twitch</h2>
+          <div className="h-px flex-1 bg-gradient-to-r from-primary via-primary to-transparent" />
+        </div>
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-4">
+          <div className="aspect-video w-full min-h-[200px] rounded-lg overflow-hidden border border-primary/30 shadow-2xl shadow-primary/20 bg-black/50 backdrop-blur-sm">
+            {twitchEmbed.status === "pending" && (
+              <div
+                className="flex h-full min-h-[12rem] items-center justify-center bg-black/40 text-muted-foreground text-sm"
+                aria-hidden
+              >
+                …
+              </div>
+            )}
+            {twitchEmbed.status === "ready" && (
+              <iframe
+                src={twitchEmbed.src}
+                className="block w-full h-full border-0"
+                title="Twitch live embed"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowFullScreen
+              />
+            )}
+            {twitchEmbed.status === "missing" && (
+              <div className="flex h-full min-h-[12rem] items-center justify-center px-4 text-center text-muted-foreground text-sm">
+                <a
+                  href={socialProfileUrls.twitch}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-4 hover:opacity-90"
+                >
+                  Twitch
+                </a>
+                <span className="mx-1">（</span>
+                <span>VITE_TWITCH 未設定のため埋め込みなし</span>
+                <span className="mx-1">）</span>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 text-center">
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-card/80 backdrop-blur-md border border-primary/30">
+              <div
+                className={`w-3 h-3 rounded-full ${twitchIsLive ? "bg-destructive animate-pulse" : "bg-muted"}`}
+              />
+              <span className="tracking-wider">
+                {twitchIsLive ? t.hero.live : t.hero.offline}
+              </span>
+            </div>
+            {/* <h1 className="mt-4 tracking-wider glow-text">{t.hero.streamerName}</h1> */}
+          </div>
+        </div>
       </section>
     </div>
   );
