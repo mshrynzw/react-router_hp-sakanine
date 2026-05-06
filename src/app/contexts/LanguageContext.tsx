@@ -47,6 +47,8 @@ interface Translations {
     thankYouHeading: string;
     thankYouBody: string;
     cta: string;
+    shopMessage: string;
+    amazonWishlistMessage: string;
     modalTitle: string;
     modalMessage: string;
     doneruButton: string;
@@ -114,7 +116,9 @@ const translations: Record<Language, Translations> = {
       thankYouHeading: 'ご支援ありがとうございます！',
       thankYouBody:
         'ご支援のおかげで、より良い配信やコンテンツづくりができます。どのような形のご支援も、心より感謝いたします。',
-      cta: '応援する / 寄付',
+      cta: 'Doneruで寄付する',
+      shopMessage: 'サカナイングッズはこちら',
+      amazonWishlistMessage: '支援物資（届いた報告はdiscordで行います）',
       modalTitle: '応援ありがとうございます',
       modalMessage: 'Doneruを通じて配信を応援していただけます',
       doneruButton: 'Doneruで応援する',
@@ -179,7 +183,9 @@ const translations: Record<Language, Translations> = {
       thankYouHeading: 'Thank You for Your Support!',
       thankYouBody:
         'Your support helps me create better content and maintain the stream. Every contribution is greatly appreciated!',
-      cta: 'Support / Donate',
+      cta: 'Support via Doneru',
+      shopMessage: 'Shop Link',
+      amazonWishlistMessage: 'Amazon Wishlist Link',
       modalTitle: 'Thank You for Your Support',
       modalMessage: 'You can support my stream via Doneru',
       doneruButton: 'Support via Doneru',
@@ -243,7 +249,9 @@ const translations: Record<Language, Translations> = {
       thankYouHeading: '感谢您的支持！',
       thankYouBody:
         '您的支持帮助我创作更好的内容并维持直播。衷心感谢您的每一份心意！',
-      cta: '支持 / 捐赠',
+      cta: '通过Doneru支持',
+      shopMessage: '商店链接',
+      amazonWishlistMessage: 'Amazon 愿望清单链接',
       modalTitle: '感谢您的支持',
       modalMessage: '您可以通过Doneru支持我的直播',
       doneruButton: '通过Doneru支持',
@@ -308,7 +316,9 @@ const translations: Record<Language, Translations> = {
       thankYouHeading: '후원해 주셔서 감사합니다!',
       thankYouBody:
         '후원은 더 좋은 콘텐츠 제작과 방송 운영에 큰 힘이 됩니다. 보내주신 마음 모두 감사드립니다.',
-      cta: '후원하기 / 기부',
+      cta: 'Doneru로 후원하기',
+      shopMessage: '상점 링크',
+      amazonWishlistMessage: 'Amazon 願望清單鏈接',
       modalTitle: '후원해 주셔서 감사합니다',
       modalMessage: 'Doneru를 통해 방송을 후원할 수 있습니다',
       doneruButton: 'Doneru로 후원하기',

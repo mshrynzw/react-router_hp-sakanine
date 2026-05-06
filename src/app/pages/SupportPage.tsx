@@ -4,6 +4,10 @@ import { Heart, X } from 'lucide-react';
 import { socialProfileUrls } from '../config/socialUrls';
 
 const doneruBannerUrl = new URL('../assets/images/doneru_bunner.webp', import.meta.url).href;
+const shopImageUrl = new URL('../assets/images/shop.webp', import.meta.url).href;
+const amazonImageUrl = new URL('../assets/images/amazon.webp', import.meta.url).href;
+const shopUrl = import.meta.env.VITE_SHOP_URL;
+const amazonUrl = import.meta.env.VITE_AMAZON_URL;
 
 export default function SupportPage() {
   const { t } = useLanguage();
@@ -38,24 +42,18 @@ export default function SupportPage() {
           </span>
         </button>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-muted-foreground">
-          <div className="p-4 rounded-lg bg-muted/10 border border-primary/10">
-            <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center mx-auto mb-3">
-              <span className="text-lg">💝</span>
-            </div>
-            <p>Support stream upgrades</p>
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-muted-foreground">
+          <div className="p-4 rounded-lg bg-muted/10 border border-primary/10 hover:text-foreground transition-all duration-300">
+            <a href={shopUrl} className="block w-full rounded-xs" target="_blank" rel="noopener noreferrer">
+              <img src={shopImageUrl} alt="shop link image" className="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" />
+              <p className="text-center mt-2">{t.support.shopMessage}</p>
+            </a>
           </div>
-          <div className="p-4 rounded-lg bg-muted/10 border border-primary/10">
-            <div className="w-10 h-10 rounded-full bg-secondary/20 border border-secondary/30 flex items-center justify-center mx-auto mb-3">
-              <span className="text-lg">🎮</span>
-            </div>
-            <p>Help with new games</p>
-          </div>
-          <div className="p-4 rounded-lg bg-muted/10 border border-primary/10">
-            <div className="w-10 h-10 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center mx-auto mb-3">
-              <span className="text-lg">⚡</span>
-            </div>
-            <p>Better content quality</p>
+          <div className="p-4 rounded-lg bg-muted/10 border border-primary/10 hover:text-foreground transition-all duration-300">
+            <a href={amazonUrl} className="block w-full rounded-xs" target="_blank" rel="noopener noreferrer">
+              <img src={amazonImageUrl} alt="Amazon wishlist link image" className="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" />
+              <p className="text-center mt-2">{t.support.amazonWishlistMessage}</p>
+            </a>
           </div>
         </div>
       </div>
