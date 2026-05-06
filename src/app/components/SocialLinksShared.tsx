@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import React, { type ComponentType } from 'react';
 import { Youtube, Twitter, Twitch, Mail } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { socialProfileUrls } from '../config/socialUrls';
@@ -142,7 +142,7 @@ export function SocialLinksFooterList() {
           <span className="text-sm font-medium tracking-wide">Discord</span>
         </div>
       )}
-            {contactEmail && (
+      {contactEmail && (
         <a
           href={`mailto:${contactEmail}`}
           className={`${footerRowClass} hover:text-sky-400`}
@@ -192,19 +192,6 @@ export function SocialLinksDropdownItems() {
           </a>
         </DropdownMenuItem>
       ))}
-      {contactEmail && (
-        <DropdownMenuItem asChild>
-          <a
-            href={`mailto:${contactEmail}`}
-            className={`${snsDropdownLinkBase} ${mailDiscordDropdownColors}`}
-          >
-            <span className={menuIconBoxClass}>
-              <Mail className="w-4 h-4" />
-            </span>
-            <span className="font-medium tracking-wide">Mail</span>
-          </a>
-        </DropdownMenuItem>
-      )}
       {discordInviteUrl ? (
         <DropdownMenuItem asChild>
           <a
@@ -225,6 +212,19 @@ export function SocialLinksDropdownItems() {
             <DiscordIcon className="w-4 h-4" />
           </span>
           <span className="font-medium tracking-wide">Discord</span>
+        </DropdownMenuItem>
+      )}
+      {contactEmail && (
+        <DropdownMenuItem asChild>
+          <a
+            href={`mailto:${contactEmail}`}
+            className={`${snsDropdownLinkBase} ${mailDiscordDropdownColors}`}
+          >
+            <span className={menuIconBoxClass}>
+              <Mail className="w-4 h-4" />
+            </span>
+            <span className="font-medium tracking-wide">Mail</span>
+          </a>
         </DropdownMenuItem>
       )}
     </>
