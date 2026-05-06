@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Mail, Send, CheckCircle2 } from 'lucide-react';
+import { DiscordIcon } from '../components/SocialLinksShared';
+
+const contactIconBoxClass =
+  'flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-background/40 border border-primary/25';
+
 
 export default function ContactPage() {
   const { t } = useLanguage();
@@ -40,7 +45,7 @@ export default function ContactPage() {
         {t.contact.intro}
       </p>
 
-      <div className="bg-card/60 backdrop-blur-md rounded-lg border border-primary/30 p-8 shadow-xl shadow-primary/10">
+      {/* <div className="bg-card/60 backdrop-blur-md rounded-lg border border-primary/30 p-8 shadow-xl shadow-primary/10">
         {submitted ? (
           <div className="text-center py-12 animate-in zoom-in duration-300">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/30 mb-6">
@@ -121,17 +126,29 @@ export default function ContactPage() {
             </button>
           </form>
         )}
-      </div>
+      </div> */}
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-6 rounded-lg bg-muted/10 border border-primary/10 backdrop-blur-sm">
-          <h3 className="mb-3 tracking-wider">Email</h3>
-          <p className="text-muted-foreground">contact@streamer.example</p>
-        </div>
-        <div className="p-6 rounded-lg bg-muted/10 border border-primary/10 backdrop-blur-sm">
-          <h3 className="mb-3 tracking-wider">Discord</h3>
-          <p className="text-muted-foreground">streamer#1234</p>
-        </div>
+        <a className="p-6 rounded-lg bg-muted/10 border border-primary/10 backdrop-blur-sm hover:text-primary hover:shadow-lg hover:backdrop-blur-2xl transition-all duration-300"
+           href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL}`}>
+          <h3 className="mb-3 tracking-wider flex items-center gap-3">
+            <span className={contactIconBoxClass}>
+              <Mail className="w-5 h-5" />
+            </span>
+            <span className="tracking-widest">Email</span>
+          </h3>
+            <p>{import.meta.env.VITE_CONTACT_EMAIL}</p>
+        </a>
+        <a className="p-6 rounded-lg bg-muted/10 border border-primary/10 backdrop-blur-sm hover:text-primary hover:shadow-lg hover:backdrop-blur-2xl transition-all duration-300"
+           href={import.meta.env.VITE_DISCORD_LINE} target="_blank" rel="noopener noreferrer">
+          <h3 className="mb-3 tracking-wider flex items-center gap-3">
+            <span className={contactIconBoxClass}>
+              <DiscordIcon className="w-5 h-5" />
+            </span>
+            <span className="tracking-widest">Discord</span>
+          </h3>
+          <p>{import.meta.env.VITE_DISCORD_LINE}</p>
+        </a>
       </div>
     </div>
   );

@@ -122,17 +122,6 @@ export function SocialLinksFooterList() {
           <span className="text-sm font-medium tracking-wide">{social.label}</span>
         </a>
       ))}
-      {contactEmail && (
-        <a
-          href={`mailto:${contactEmail}`}
-          className={`${footerRowClass} hover:text-sky-400`}
-        >
-          <span className={footerIconBoxClass}>
-            <Mail className="w-5 h-5" />
-          </span>
-          <span className="text-sm font-medium tracking-wide break-all">Mail</span>
-        </a>
-      )}
       {discordInviteUrl ? (
         <a
           href={discordInviteUrl}
@@ -152,6 +141,17 @@ export function SocialLinksFooterList() {
           </span>
           <span className="text-sm font-medium tracking-wide">Discord</span>
         </div>
+      )}
+            {contactEmail && (
+        <a
+          href={`mailto:${contactEmail}`}
+          className={`${footerRowClass} hover:text-sky-400`}
+        >
+          <span className={footerIconBoxClass}>
+            <Mail className="w-5 h-5" />
+          </span>
+          <span className="text-sm font-medium tracking-wide break-all">Mail</span>
+        </a>
       )}
     </div>
   );
