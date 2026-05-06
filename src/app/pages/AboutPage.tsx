@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Play } from 'lucide-react';
-import gamelistRaw from '../assets/markdown/gamelist.md?raw';
+import { useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { Play } from "lucide-react";
+import gamelistRaw from "../assets/markdown/gamelist.md?raw";
 import {
   ABOUT_HIGHLIGHTS,
   resolveHighlightThumbnailSrc,
   resolveHighlightVideoSrc,
-} from '../config/aboutHighlights';
+} from "../config/aboutHighlights";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '../components/ui/dialog';
+} from "../components/ui/dialog";
 
-const iconImage = new URL('../assets/images/icon.webp', import.meta.url).href;
+const iconImage = new URL("../assets/images/icon.webp", import.meta.url).href;
 
 const PAST_GAME_LINES: string[] = (gamelistRaw as string)
   .split(/\r?\n/)
@@ -23,17 +23,17 @@ const PAST_GAME_LINES: string[] = (gamelistRaw as string)
 
 function bioWithHighlightedTwitch(bio: string) {
   return bio.split(/(Twitch)/g).map((part, i) =>
-    part === 'Twitch' ? (
+    part === "Twitch" ? (
       import.meta.env.VITE_TWITCH ? (
-      <a
-        key={i}
-        href={`https://www.twitch.tv/${import.meta.env.VITE_TWITCH}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline font-bold text-primary tracking-wide drop-shadow-[0_0_14px_color-mix(in_srgb,var(--primary)_50%,transparent)] hover:underline"
-      >
-        {part}
-      </a>
+        <a
+          key={i}
+          href={`https://www.twitch.tv/${import.meta.env.VITE_TWITCH}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline font-bold text-primary tracking-wide drop-shadow-[0_0_14px_color-mix(in_srgb,var(--primary)_50%,transparent)] hover:underline"
+        >
+          {part}
+        </a>
       ) : (
         <span key={i}>{part}</span>
       )
@@ -50,7 +50,7 @@ export default function AboutPage() {
     playingIndex !== null ? ABOUT_HIGHLIGHTS[playingIndex] : null;
   const activeVideoSrc = activeHighlight
     ? resolveHighlightVideoSrc(activeHighlight)
-    : '';
+    : "";
   const activePosterSrc = activeHighlight
     ? resolveHighlightThumbnailSrc(activeHighlight)
     : null;
@@ -81,7 +81,11 @@ export default function AboutPage() {
                 {bioWithHighlightedTwitch(t.about.bio)}
               </p>
               <p className="text-primary hover:underline leading-relaxed max-w-2xl mt-4">
-                <a href="https://dic.nicovideo.jp/l/%E4%B8%96%E7%95%8C%E3%81%AE%E5%B1%81%E3%81%93%E3%81%8D%E9%9A%8A" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://dic.nicovideo.jp/l/%E4%B8%96%E7%95%8C%E3%81%AE%E5%B1%81%E3%81%93%E3%81%8D%E9%9A%8A"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {t.about.openExternal}
                 </a>
               </p>
@@ -103,11 +107,11 @@ export default function AboutPage() {
       </section>
 
       <section className="mb-16">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
-        <h1 className="tracking-widest">{t.about.highlights}</h1>
-        <div className="h-px flex-1 bg-gradient-to-r from-primary via-primary to-transparent" />
-      </div>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
+          <h1 className="tracking-widest">{t.about.highlights}</h1>
+          <div className="h-px flex-1 bg-gradient-to-r from-primary via-primary to-transparent" />
+        </div>
         {/* <p className="text-center text-muted-foreground text-sm max-w-2xl mx-auto">
           {t.about.niconicoHighlights}
         </p> */}
@@ -118,46 +122,48 @@ export default function AboutPage() {
             return (
               <div
                 key={highlight.videoUrl}
-                className="group relative bg-card/60 backdrop-blur-md rounded-lg overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
+                className="liquid-glass-card group relative bg-card/60 backdrop-blur-md rounded-lg overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
               >
-              <div className="aspect-video bg-muted/40 relative overflow-hidden">
-                {thumbSrc ? (
-                  <img
-                    src={thumbSrc}
-                    alt={highlight.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-muted/90 via-muted/50 to-muted/30" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
-                <div className={`absolute top-3 right-3 px-3 py-1 rounded-full backdrop-blur-sm text-xs tracking-wider z-10 ${highlight.source === 'nico' ? 'bg-[#3EA6FF]/90' : 'bg-[#9146FF]/90'}`}>
-                  {highlight.source === 'nico' ? 'Niconico' : 'Twitch'}
+                <div className="aspect-video bg-muted/40 relative overflow-hidden">
+                  {thumbSrc ? (
+                    <img
+                      src={thumbSrc}
+                      alt={highlight.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-muted/90 via-muted/50 to-muted/30" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
+                  <div
+                    className={`absolute top-3 right-3 px-3 py-1 rounded-full backdrop-blur-sm text-xs tracking-wider z-10 ${highlight.source === "nico" ? "bg-[#3EA6FF]/90" : "bg-[#9146FF]/90"}`}
+                  >
+                    {highlight.source === "nico" ? "Niconico" : "Twitch"}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setPlayingIndex(i)}
+                    className="absolute inset-0 z-10 flex items-center justify-center transition-transform duration-300 hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    aria-label={t.about.playHighlight}
+                  >
+                    <Play
+                      className="w-16 h-16 text-primary drop-shadow-lg"
+                      fill="currentColor"
+                    />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setPlayingIndex(i)}
-                  className="absolute inset-0 z-10 flex items-center justify-center transition-transform duration-300 hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                  aria-label={t.about.playHighlight}
-                >
-                  <Play
-                    className="w-16 h-16 text-primary drop-shadow-lg"
-                    fill="currentColor"
-                  />
-                </button>
+                <div className="p-4 space-y-2">
+                  <p className="tracking-wide">{highlight.title}</p>
+                  <a
+                    href={highlight.videoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline inline-block"
+                  >
+                    {t.about.openExternal}
+                  </a>
+                </div>
               </div>
-              <div className="p-4 space-y-2">
-                <p className="tracking-wide">{highlight.title}</p>
-                <a
-                  href={highlight.videoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline inline-block"
-                >
-                  {t.about.openExternal}
-                </a>
-              </div>
-            </div>
             );
           })}
         </div>
@@ -172,7 +178,10 @@ export default function AboutPage() {
         <div className="bg-card/60 backdrop-blur-md rounded-lg border border-primary/30 p-6 md:p-8 shadow-xl shadow-primary/10 max-h-[min(70vh,52rem)] overflow-y-auto">
           <ul className="list-disc list-outside pl-5 space-y-1.5 text-muted-foreground text-sm md:text-base md:columns-2 md:gap-x-10">
             {PAST_GAME_LINES.map((line, i) => (
-              <li key={`${i}-${line.slice(0, 48)}`} className="break-words [break-inside:avoid]">
+              <li
+                key={`${i}-${line.slice(0, 48)}`}
+                className="break-words [break-inside:avoid]"
+              >
                 {line}
               </li>
             ))}

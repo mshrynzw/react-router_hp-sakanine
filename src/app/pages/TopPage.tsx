@@ -269,7 +269,7 @@ export default function TopPage() {
                   href={card.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative bg-card/60 backdrop-blur-md rounded-lg overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 cursor-pointer block"
+                  className="liquid-glass-card group relative bg-card/60 backdrop-blur-md rounded-lg overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 cursor-pointer block"
                 >
                   <div className="aspect-video bg-muted/30 relative overflow-hidden">
                     {card.thumbnailUrl ? (

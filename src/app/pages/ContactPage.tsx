@@ -1,20 +1,19 @@
-import { useState } from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Mail, Send, CheckCircle2 } from 'lucide-react';
-import { DiscordIcon } from '../components/SocialLinksShared';
+import { useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { Mail, Send, CheckCircle2 } from "lucide-react";
+import { DiscordIcon } from "../components/SocialLinksShared";
 
 const contactIconBoxClass =
-  'flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-background/40 border border-primary/25';
-
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-background/40 border border-primary/25";
 
 export default function ContactPage() {
   const { t } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-    budget: '',
+    name: "",
+    email: "",
+    message: "",
+    budget: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -22,11 +21,13 @@ export default function ContactPage() {
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
-      setFormData({ name: '', email: '', message: '', budget: '' });
+      setFormData({ name: "", email: "", message: "", budget: "" });
     }, 3000);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -129,18 +130,24 @@ export default function ContactPage() {
       </div> */}
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <a className="p-6 rounded-lg bg-muted/10 border border-primary/10 backdrop-blur-sm hover:text-primary hover:shadow-lg hover:backdrop-blur-2xl transition-all duration-300"
-           href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL}`}>
+        <a
+          className="liquid-glass-card p-6 rounded-lg bg-muted/10 border border-primary/10 backdrop-blur-sm hover:text-primary hover:shadow-lg hover:backdrop-blur-2xl transition-all duration-300"
+          href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL}`}
+        >
           <h3 className="mb-3 tracking-wider flex items-center gap-3">
             <span className={contactIconBoxClass}>
               <Mail className="w-5 h-5" />
             </span>
             <span className="tracking-widest">Email</span>
           </h3>
-            <p>{import.meta.env.VITE_CONTACT_EMAIL}</p>
+          <p>{import.meta.env.VITE_CONTACT_EMAIL}</p>
         </a>
-        <a className="p-6 rounded-lg bg-muted/10 border border-primary/10 backdrop-blur-sm hover:text-primary hover:shadow-lg hover:backdrop-blur-2xl transition-all duration-300"
-           href={import.meta.env.VITE_DISCORD_LINE} target="_blank" rel="noopener noreferrer">
+        <a
+          className="liquid-glass-card p-6 rounded-lg bg-muted/10 border border-primary/10 backdrop-blur-sm hover:text-primary hover:shadow-lg hover:backdrop-blur-2xl transition-all duration-300"
+          href={import.meta.env.VITE_DISCORD_LINE}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <h3 className="mb-3 tracking-wider flex items-center gap-3">
             <span className={contactIconBoxClass}>
               <DiscordIcon className="w-5 h-5" />

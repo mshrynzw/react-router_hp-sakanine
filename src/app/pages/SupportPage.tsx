@@ -1,11 +1,16 @@
-import { useState } from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Heart, X } from 'lucide-react';
-import { socialProfileUrls } from '../config/socialUrls';
+import { useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { Heart, X } from "lucide-react";
+import { socialProfileUrls } from "../config/socialUrls";
 
-const doneruBannerUrl = new URL('../assets/images/doneru_bunner.webp', import.meta.url).href;
-const shopImageUrl = new URL('../assets/images/shop.webp', import.meta.url).href;
-const amazonImageUrl = new URL('../assets/images/amazon.webp', import.meta.url).href;
+const doneruBannerUrl = new URL(
+  "../assets/images/doneru_bunner.webp",
+  import.meta.url,
+).href;
+const shopImageUrl = new URL("../assets/images/shop.webp", import.meta.url)
+  .href;
+const amazonImageUrl = new URL("../assets/images/amazon.webp", import.meta.url)
+  .href;
 const shopUrl = import.meta.env.VITE_SHOP_URL;
 const amazonUrl = import.meta.env.VITE_AMAZON_URL;
 
@@ -21,7 +26,7 @@ export default function SupportPage() {
         <div className="h-px flex-1 bg-gradient-to-r from-primary via-primary to-transparent" />
       </div>
 
-      <div className="bg-card/60 backdrop-blur-md rounded-lg border border-primary/30 p-12 shadow-xl shadow-primary/10 text-center">
+      <div className="liquid-glass-card bg-card/60 backdrop-blur-md rounded-lg border border-primary/30 p-12 shadow-xl shadow-primary/10 text-center">
         <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-accent/30 to-accent/10 border border-accent/30 mb-8">
           <Heart className="w-12 h-12 text-accent" />
         </div>
@@ -44,15 +49,35 @@ export default function SupportPage() {
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-muted-foreground">
           <div className="p-4 rounded-lg bg-muted/10 border border-primary/10 hover:text-foreground transition-all duration-300">
-            <a href={shopUrl} className="block w-full rounded-xs" target="_blank" rel="noopener noreferrer">
-              <img src={shopImageUrl} alt="shop link image" className="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" />
+            <a
+              href={shopUrl}
+              className="block w-full rounded-xs"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={shopImageUrl}
+                alt="shop link image"
+                className="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              />
               <p className="text-center mt-2">{t.support.shopMessage}</p>
             </a>
           </div>
           <div className="p-4 rounded-lg bg-muted/10 border border-primary/10 hover:text-foreground transition-all duration-300">
-            <a href={amazonUrl} className="block w-full rounded-xs" target="_blank" rel="noopener noreferrer">
-              <img src={amazonImageUrl} alt="Amazon wishlist link image" className="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" />
-              <p className="text-center mt-2">{t.support.amazonWishlistMessage}</p>
+            <a
+              href={amazonUrl}
+              className="block w-full rounded-xs"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={amazonImageUrl}
+                alt="Amazon wishlist link image"
+                className="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              />
+              <p className="text-center mt-2">
+                {t.support.amazonWishlistMessage}
+              </p>
             </a>
           </div>
         </div>
