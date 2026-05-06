@@ -140,7 +140,7 @@ function ActivityThumbnail({
 
 export default function TopPage() {
   const { t, language } = useLanguage();
-  const isLive = false;
+  const [twitchIsLive, setTwitchIsLive] = useState(false);
   /** Twitch は `parent` が必須のため、マウント後に hostname を確実に含めて組み立てる */
   const [twitchEmbed, setTwitchEmbed] = useState<
     { status: 'pending' } | { status: 'ready'; src: string } | { status: 'missing' }
@@ -166,10 +166,11 @@ export default function TopPage() {
     setTwitchApiError(undefined);
     setXApiError(undefined);
     fetchLatestActivityFromApi(ac.signal)
-      .then(({ items, twitchError, xError }) => {
+      .then(({ items, twitchError, xError, twitchLive }) => {
         setActivityItems(items);
         setTwitchApiError(twitchError);
         setXApiError(xError);
+        if (typeof twitchLive === 'boolean') setTwitchIsLive(twitchLive);
       })
       .finally(() => {
         if (!ac.signal.aborted) setFeedLoading(false);
@@ -266,8 +267,8 @@ export default function TopPage() {
 
           <div className="mt-6 text-center">
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-card/80 backdrop-blur-md border border-primary/30">
-              <div className={`w-3 h-3 rounded-full ${isLive ? 'bg-destructive animate-pulse' : 'bg-muted'}`} />
-              <span className="tracking-wider">{isLive ? t.hero.live : t.hero.offline}</span>
+              <div className={`w-3 h-3 rounded-full ${twitchIsLive ? 'bg-destructive animate-pulse' : 'bg-muted'}`} />
+              <span className="tracking-wider">{twitchIsLive ? t.hero.live : t.hero.offline}</span>
             </div>
             {/* <h1 className="mt-4 tracking-wider glow-text">{t.hero.streamerName}</h1> */}
           </div>

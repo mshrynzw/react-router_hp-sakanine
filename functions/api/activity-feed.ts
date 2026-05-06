@@ -14,6 +14,8 @@ type ActivityFetchResult = {
   items: ActivityItem[];
   twitchError?: string;
   xError?: string;
+  /** Helix `streams` でチャンネルがライブと判定できたとき */
+  twitchLive?: boolean;
 };
 
 type Env = {
@@ -126,6 +128,29 @@ async function fetchTwitchUserId(
   const body = (await res.json()) as { data?: Array<{ id?: string }> };
   if (!res.ok) return { userId: null, error: parseTwitchApiError(res.status, body) };
   return { userId: body.data?.[0]?.id ?? null };
+}
+
+async function fetchTwitchStreamLive(
+  login: string,
+  clientId: string,
+  accessToken: string
+): Promise<{ live: boolean }> {
+  try {
+    const res = await fetch(
+      `https://api.twitch.tv/helix/streams?user_login=${encodeURIComponent(login)}`,
+      {
+        headers: {
+          'Client-Id': clientId,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const body = (await res.json()) as { data?: unknown[] };
+    if (!res.ok) return { live: false };
+    return { live: (body.data?.length ?? 0) > 0 };
+  } catch {
+    return { live: false };
+  }
 }
 
 async function fetchTwitchLatest(
@@ -265,17 +290,43 @@ async function buildActivityFeed(env: Env): Promise<ActivityFetchResult> {
   const maxMerged = resolveMaxMerged(env);
   const xMaxResults = resolveXMaxResults(env);
 
-  const tasks: Array<Promise<{ source: 'twitch' | 'x'; items: ActivityItem[]; error?: string }>> = [];
+  const tasks: Array<
+    Promise<{
+      source: 'twitch' | 'x';
+      items: ActivityItem[];
+      error?: string;
+      twitchLive?: boolean;
+    }>
+  > = [];
 
   if (twitchLogin && twitchClientId && twitchToken) {
     tasks.push(
-      fetchTwitchLatest(twitchLogin, twitchClientId, twitchToken, maxPerSource)
-        .then((res) => ({ source: 'twitch' as const, ...res }))
-        .catch((e: unknown) => ({
-          source: 'twitch' as const,
-          items: [] as ActivityItem[],
-          error: e instanceof Error ? e.message : 'Twitch fetch failed.',
-        }))
+      (async () => {
+        try {
+          const [latest, liveRes] = await Promise.all([
+            fetchTwitchLatest(
+              twitchLogin,
+              twitchClientId,
+              twitchToken,
+              maxPerSource
+            ),
+            fetchTwitchStreamLive(twitchLogin, twitchClientId, twitchToken),
+          ]);
+          return {
+            source: 'twitch' as const,
+            items: latest.items,
+            error: latest.error,
+            twitchLive: liveRes.live,
+          };
+        } catch (e: unknown) {
+          return {
+            source: 'twitch' as const,
+            items: [] as ActivityItem[],
+            error: e instanceof Error ? e.message : 'Twitch fetch failed.',
+            twitchLive: false,
+          };
+        }
+      })()
     );
   }
   if (xBearerToken && xUserId) {
@@ -296,10 +347,14 @@ async function buildActivityFeed(env: Env): Promise<ActivityFetchResult> {
   const allItems: ActivityItem[] = [];
   let twitchError: string | undefined;
   let xError: string | undefined;
+  let twitchLive: boolean | undefined;
 
   for (const chunk of chunks) {
     allItems.push(...chunk.items);
-    if (chunk.source === 'twitch' && chunk.error) twitchError = chunk.error;
+    if (chunk.source === 'twitch') {
+      if (chunk.error) twitchError = chunk.error;
+      if (chunk.twitchLive !== undefined) twitchLive = chunk.twitchLive;
+    }
     if (chunk.source === 'x' && chunk.error) xError = chunk.error;
   }
 
@@ -309,6 +364,7 @@ async function buildActivityFeed(env: Env): Promise<ActivityFetchResult> {
     items,
     ...(twitchError && items.length === 0 ? { twitchError } : {}),
     ...(xError && items.length === 0 ? { xError } : {}),
+    ...(twitchLive !== undefined ? { twitchLive } : {}),
   };
 }
 

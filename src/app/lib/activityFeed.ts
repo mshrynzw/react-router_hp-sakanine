@@ -26,22 +26,14 @@ type YouTubeFeedRow = {
   url: string;
 };
 
-type TwitchFeedRow = {
-  id: string;
-  platform: 'twitch';
-  title: string;
-  publishedAt: number;
-  thumbnail: string | null;
-  url: string;
-  durationSeconds?: number;
-};
-
 export interface ActivityFetchResult {
   items: ActivityItem[];
   /** YouTube を試みたが失敗したとき（403 等。UI に表示用） */
   youtubeError?: string;
   /** Twitch を試みたが失敗したとき（401/403 等。UI に表示用） */
   twitchError?: string;
+  /** Helix `streams` でチャンネルがライブと判定できたとき */
+  twitchLive?: boolean;
 }
 
 function twitchThumbUrl(raw: string | undefined | null): string | null {
@@ -202,6 +194,31 @@ async function fetchTwitchUserId(
   return { userId: data.data?.[0]?.id ?? null };
 }
 
+async function fetchTwitchStreamLive(
+  login: string,
+  clientId: string,
+  accessToken: string,
+  signal: AbortSignal | undefined
+): Promise<{ live: boolean }> {
+  try {
+    const res = await fetch(
+      `https://api.twitch.tv/helix/streams?user_login=${encodeURIComponent(login)}`,
+      {
+        signal,
+        headers: {
+          'Client-Id': clientId,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const data = (await res.json()) as { data?: unknown[] };
+    if (!res.ok) return { live: false };
+    return { live: (data.data?.length ?? 0) > 0 };
+  } catch {
+    return { live: false };
+  }
+}
+
 async function fetchTwitchLatest(
   login: string,
   clientId: string,
@@ -246,17 +263,19 @@ async function fetchTwitchLatest(
     .map((v) => {
       const published = v.published_at ?? v.created_at;
       if (!v.id || !v.title || !published || !v.url) return null;
-      return {
+      const durationSeconds = parseTwitchDurationToSeconds(v.duration);
+      const row: ActivityItem = {
         id: v.id,
-        platform: 'twitch' as const,
+        platform: 'twitch',
         title: v.title,
         publishedAt: new Date(published).getTime(),
         thumbnail: twitchThumbUrl(v.thumbnail_url),
         url: v.url,
-        durationSeconds: parseTwitchDurationToSeconds(v.duration),
+        ...(durationSeconds !== undefined ? { durationSeconds } : {}),
       };
+      return row;
     })
-    .filter((x): x is TwitchFeedRow => x !== null);
+    .filter((x): x is ActivityItem => x !== null);
   return { items };
 }
 
@@ -279,7 +298,12 @@ export async function fetchLatestActivity(
 
   type FeedChunk =
     | { source: 'youtube'; items: ActivityItem[]; error?: string }
-    | { source: 'twitch'; items: ActivityItem[]; error?: string };
+    | {
+        source: 'twitch';
+        items: ActivityItem[];
+        error?: string;
+        twitchLive?: boolean;
+      };
   const tasks: Promise<FeedChunk>[] = [];
 
   if (youtubeChannelId && ytKey) {
@@ -301,19 +325,38 @@ export async function fetchLatestActivity(
 
   if (twitchLogin && twitchClientId && twitchToken) {
     tasks.push(
-      fetchTwitchLatest(
-        twitchLogin,
-        twitchClientId,
-        twitchToken,
-        MAX_PER_SOURCE,
-        signal
-      )
-        .then((res) => ({ source: 'twitch' as const, ...res }))
-        .catch((e: unknown) => ({
-          source: 'twitch' as const,
-          items: [] as ActivityItem[],
-          error: e instanceof Error ? e.message : 'Twitch の取得に失敗しました。',
-        }))
+      (async (): Promise<FeedChunk> => {
+        try {
+          const [latest, liveRes] = await Promise.all([
+            fetchTwitchLatest(
+              twitchLogin,
+              twitchClientId,
+              twitchToken,
+              MAX_PER_SOURCE,
+              signal
+            ),
+            fetchTwitchStreamLive(
+              twitchLogin,
+              twitchClientId,
+              twitchToken,
+              signal
+            ),
+          ]);
+          return {
+            source: 'twitch' as const,
+            items: latest.items,
+            error: latest.error,
+            twitchLive: liveRes.live,
+          };
+        } catch (e: unknown) {
+          return {
+            source: 'twitch' as const,
+            items: [] as ActivityItem[],
+            error: e instanceof Error ? e.message : 'Twitch の取得に失敗しました。',
+            twitchLive: false,
+          };
+        }
+      })()
     );
   }
 
@@ -322,12 +365,16 @@ export async function fetchLatestActivity(
   const chunks = await Promise.all(tasks);
   let youtubeError: string | undefined;
   let twitchError: string | undefined;
+  let twitchLive: boolean | undefined;
 
   const flatItems: ActivityItem[] = [];
   for (const chunk of chunks) {
     flatItems.push(...chunk.items);
     if (chunk.source === 'youtube' && chunk.error) youtubeError = chunk.error;
-    if (chunk.source === 'twitch' && chunk.error) twitchError = chunk.error;
+    if (chunk.source === 'twitch') {
+      if (chunk.error) twitchError = chunk.error;
+      if (chunk.twitchLive !== undefined) twitchLive = chunk.twitchLive;
+    }
   }
 
   flatItems.sort((a, b) => b.publishedAt - a.publishedAt);
@@ -337,5 +384,6 @@ export async function fetchLatestActivity(
     items,
     ...(youtubeError && items.length === 0 ? { youtubeError } : {}),
     ...(twitchError && items.length === 0 ? { twitchError } : {}),
+    ...(twitchLive !== undefined ? { twitchLive } : {}),
   };
 }

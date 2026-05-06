@@ -4,6 +4,7 @@ export interface ActivityFetchResult {
   items: ActivityItem[];
   twitchError?: string;
   xError?: string;
+  twitchLive?: boolean;
 }
 
 export async function fetchLatestActivityFromApi(
@@ -25,5 +26,6 @@ export async function fetchLatestActivityFromApi(
     items: Array.isArray(body.items) ? body.items : [],
     ...(body.twitchError ? { twitchError: body.twitchError } : {}),
     ...(body.xError ? { xError: body.xError } : {}),
+    ...(typeof body.twitchLive === 'boolean' ? { twitchLive: body.twitchLive } : {}),
   };
 }
