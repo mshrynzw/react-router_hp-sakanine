@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router';
-import { useLanguage } from '../contexts/LanguageContext';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { useState } from "react";
+import { Link, useLocation } from "react-router";
+import { useLanguage } from "../contexts/LanguageContext";
+import { ChevronDown, Menu, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import { SocialLinksDropdownItems } from './SocialLinksShared';
+} from "./ui/dropdown-menu";
+import { SocialLinksDropdownItems } from "./SocialLinksShared";
 
-const iconImage = new URL('../assets/images/icon.webp', import.meta.url).href;
+const iconImage = new URL("../assets/images/icon.webp", import.meta.url).href;
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage();
@@ -17,31 +17,35 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { path: '/', label: t.nav.top },
-    { path: '/about', label: t.nav.about },
-    { path: '/schedule', label: t.nav.schedule },
-    { path: '/support', label: t.nav.support },
-    { path: '/contact', label: t.nav.contact },
+    { path: "/", label: t.nav.top },
+    { path: "/about", label: t.nav.about },
+    { path: "/schedule", label: t.nav.schedule },
+    { path: "/support", label: t.nav.support },
+    { path: "/contact", label: t.nav.contact },
   ];
 
   const languages = [
-    { code: 'ja', label: 'JP' },
-    { code: 'en', label: 'EN' },
-    { code: 'zh', label: '中文' },
-    { code: 'ko', label: '한국어' },
+    { code: "ja", label: "JP" },
+    { code: "en", label: "EN" },
+    { code: "zh", label: "中文" },
+    { code: "ko", label: "한국어" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   };
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/20 shadow-lg shadow-primary/5">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" onClick={scrollToTop} className="flex items-center gap-2 group">
+          <Link
+            to="/"
+            onClick={scrollToTop}
+            className="flex items-center gap-2 group"
+          >
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
               <img
@@ -52,7 +56,7 @@ export default function Header() {
             </div>
             <span className="font-['WDXL_Lubrifont_JP_N',_'Noto_Sans_JP',_sans-serif] tracking-widest">
               <span>サカナイン / Sakanine </span>
-              <span className="hidden xl:inline">（世界のの屁こき隊）</span>
+              <span className="hidden xl:inline">（世界の屁こき隊）</span>
             </span>
           </Link>
 
@@ -69,8 +73,8 @@ export default function Header() {
                 }
                 className={`px-4 py-2 rounded-lg transition-all duration-300 tracking-wider text-sm ${
                   isActive(item.path)
-                    ? 'bg-primary/20 text-primary border border-primary/30'
-                    : 'hover:bg-muted/20 text-muted-foreground hover:text-foreground nav-invite-glow'
+                    ? "bg-primary/20 text-primary border border-primary/30"
+                    : "hover:bg-muted/20 text-muted-foreground hover:text-foreground nav-invite-glow"
                 }`}
               >
                 {item.label}
@@ -86,8 +90,8 @@ export default function Header() {
                   onClick={() => setLanguage(lang.code as any)}
                   className={`px-3 py-1 rounded text-xs tracking-wider transition-all duration-300 ${
                     language === lang.code
-                      ? 'bg-primary text-white'
-                      : 'hover:bg-muted/30 text-muted-foreground'
+                      ? "bg-primary text-white"
+                      : "hover:bg-muted/30 text-muted-foreground"
                   }`}
                 >
                   {lang.label}
@@ -114,7 +118,10 @@ export default function Header() {
                   </span>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[min(calc(100vw-2rem),18rem)] p-2">
+              <DropdownMenuContent
+                align="end"
+                className="w-[min(calc(100vw-2rem),18rem)] p-2"
+              >
                 <SocialLinksDropdownItems />
               </DropdownMenuContent>
             </DropdownMenu>
@@ -123,7 +130,11 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden w-10 h-10 rounded-lg bg-muted/20 hover:bg-muted/30 border border-primary/20 flex items-center justify-center transition-colors"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
@@ -147,8 +158,8 @@ export default function Header() {
                 }
                 className={`block px-4 py-3 rounded-lg transition-all duration-300 tracking-wider ${
                   isActive(item.path)
-                    ? 'bg-primary/20 text-primary border border-primary/30'
-                    : 'hover:bg-muted/20 text-muted-foreground hover:text-foreground nav-invite-glow'
+                    ? "bg-primary/20 text-primary border border-primary/30"
+                    : "hover:bg-muted/20 text-muted-foreground hover:text-foreground nav-invite-glow"
                 }`}
               >
                 {item.label}
@@ -166,8 +177,8 @@ export default function Header() {
                     }}
                     className={`px-3 py-2 rounded text-sm tracking-wider transition-all duration-300 ${
                       language === lang.code
-                        ? 'bg-primary text-white'
-                        : 'bg-muted/20 hover:bg-muted/30 text-muted-foreground'
+                        ? "bg-primary text-white"
+                        : "bg-muted/20 hover:bg-muted/30 text-muted-foreground"
                     }`}
                   >
                     {lang.label}
